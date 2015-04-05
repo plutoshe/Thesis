@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>比较明星脸</title>
+        <link rel="stylesheet" href="/stylesheets/base.css" type="text/css" media="screen">
+    </head>
+
+    <body>
+
+        <div class="container">
+            <h1>比较明星脸</h1>
+
+            <section class="main-content">
+                <p>上传图片或者手机照相与对应明星进行比较</p>
+                <form  action="/refresh" method = "post" enctype="multipart/form-data">
+                    FirstName:<input type="text" name="FirstName">
+                    LastName:<input type="text" name="LastName">
+
+                    <input type="file" name="pic" id="take-picture" accept="image/*">
+                    
+                    <input type="submit"  value="Submit">
+                </form>
+
+<!--                 <h2>Preview:</h2>
+                <p>
+                    <img src="about:blank" alt="" id="show-picture">
+                </p>
+ -->
+                <!-- <p id="error"></p> -->
+
+            </section>
+
+            <!-- <p class="footer">All the code is available in the <a href="https://github.com/robnyman/robnyman.github.com/tree/master/camera-api">Camera API repository on GitHub</a>.</p> -->
+        </div>
+
+
+        <!-- <script src="./js/base.js"></script> -->
+
+
+    </body>
+</html>
