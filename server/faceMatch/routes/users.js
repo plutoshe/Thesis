@@ -49,85 +49,97 @@ router.post('/refresh', multipartMiddleware, function(req, res) {
  //        img : req.files.pic,
  //        mode: 'normal'
  //    };
+ 	var gm = require('gm');
+	var fs = require('fs');
+	var imageMagick = gm.subClass({ imageMagick : true });
  	console.log(req.files.pic["path"]);
-	var data = fs.createReadStream(path.join(req.files.pic["path"]));
-	var detectParams = {
-   		img : data
-    };
-    if (req.files.pic["size"] > 3 * 1024 * 1024) {
-    	
-    	return
-    }
-	console.log(detectParams);
-	facePP.detection.detect(detectParams, function (err, faceRes) {
-		// if (faceRes.face.length == 0) {
-			
-		// 	return
-		// }
-		console.log("!!!!!");
-		if (err) {
-			// res.send(err);
-			console.log(err);
-			return
-		}
-		console.log(faceRes);
-	    var nowId = faceRes.face[0]["face_id"];
-		var recoginitionParam = [{
-			face_id1 : "73b5ca37fc47dc952c94f207e29d5519",
-			face_id2 : nowId
-		}, {
-			face_id1 : "21b1a530b3eeef2a70d21e26b35d1deb",
-			face_id2 : nowId
-		},
-		{
-			face_id1 : "cfca45bc84011fa465fa6f3c14cb4a79",
-			face_id2 : nowId
-		}];
-		
-		// console.log(recoginitionParam[0]);
-		console.log("!!!!");
-		async.parallel([
-		    function(callback) { facePP.recognition.compare(recoginitionParam[0], callback);  },
-		    function(callback) { facePP.recognition.compare(recoginitionParam[1], callback);  },
-		    function(callback) { facePP.recognition.compare(recoginitionParam[2], callback);  }
-			], 
+ 	var srcPath = path.join(req.files.pic["path"]);
+ 	var dstPath = path.join("/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch", "2.jpg");
+ 	console.log(srcPath, " ", dstPath);
+ 	imageMagick(srcPath).resize(600, 480, '!') .autoOrient().write(dstPath, function(err) {
+ 		console.log("finished resize");
 
-
-			function (err, results) { 
-				// console.log(results);
-				// if (err) {
-				// 	return
-				// }
-				var max = results[0]["similarity"], select = 0;
-				for (var i = 1; i < results.length; i++) {
-					if (results[i]["similarity"] > max) {
-						max = results[i]["similarity"]
-						select = i;
-					}
-				}
+		var data = fs.createReadStream(path.join(dstPath));
+		var detectParams = {
+	   		img : data
+	    };
+	    if (req.files.pic["size"] > 3 * 1024 * 1024) {
+	    	
+	    	return
+	    }
+		console.log(detectParams);
+		facePP.detection.detect(detectParams, function (err, faceRes) {
+			// if (faceRes.face.length == 0) {
 				
-				var url = facePP.baseUrl + '/info/get_face';
-				var qsParams = {
-			        api_key: facePP.api_key,
-			        api_secret: facePP.api_secret,
-			        face_id : recoginitionParam[select]["face_id1"]
-			    };
-			    // console.log(select);
-			    //这是没有网络的时候的做法！ 
-			    var img_url = ["/img/LDH1.jpg", "/img/LJ1.jpg", "/img/CXY1.jpg"]
-			    res.render("demonstrate", { similarity : max, PicURL : img_url[select]});
+			// 	return
+			// }
+			console.log("!!!!!");
+			if (err) {
+				// res.send(err);
+				console.log(err);
+				return
+			}
+			// console.log(faceRes);
+			if (!faceRes.face[0]["face_id"]) {
+				res.end();
+			}
+		    var nowId = faceRes.face[0]["face_id"];
+			var recoginitionParam = [{
+				face_id1 : "73b5ca37fc47dc952c94f207e29d5519",
+				face_id2 : nowId
+			}, {
+				face_id1 : "21b1a530b3eeef2a70d21e26b35d1deb",
+				face_id2 : nowId
+			},
+			{
+				face_id1 : "cfca45bc84011fa465fa6f3c14cb4a79",
+				face_id2 : nowId
+			}];
+			
+			// console.log(recoginitionParam[0]);
+			console.log("!!!!");
+			async.parallel([
+			    function(callback) { facePP.recognition.compare(recoginitionParam[0], callback);  },
+			    function(callback) { facePP.recognition.compare(recoginitionParam[1], callback);  },
+			    function(callback) { facePP.recognition.compare(recoginitionParam[2], callback);  }
+				], 
 
-			    //这是有网络的时候的做法！ 
-	    		// request.get(url, {qs: qsParams}, function (err, getFaceRes) {
-			    //     var x =JSON.parse(getFaceRes.body);
-			    //     // console.log(x);
-			    //     res.render("demonstrate", { similarity : max, PicURL : x["face_info"][0]["url"]});
-			        
-			    // });
-		});	        
 
-	});	
-	
+				function (err, results) { 
+					// console.log(results);
+					// if (err) {
+					// 	return
+					// }
+					var max = results[0]["similarity"], select = 0;
+					for (var i = 1; i < results.length; i++) {
+						if (results[i]["similarity"] > max) {
+							max = results[i]["similarity"]
+							select = i;
+						}
+					}
+					
+					var url = facePP.baseUrl + '/info/get_face';
+					var qsParams = {
+				        api_key: facePP.api_key,
+				        api_secret: facePP.api_secret,
+				        face_id : recoginitionParam[select]["face_id1"]
+				    };
+				    // console.log(select);
+				    //这是没有网络的时候的做法！ 
+				    var img_url = ["/img/LDH1.jpg", "/img/LJ1.jpg", "/img/CXY1.jpg"]
+				    res.render("demonstrate", { similarity : max, PicURL : img_url[select]});
+
+				    //这是有网络的时候的做法！ 
+		    		// request.get(url, {qs: qsParams}, function (err, getFaceRes) {
+				    //     var x =JSON.parse(getFaceRes.body);
+				    //     // console.log(x);
+				    //     res.render("demonstrate", { similarity : max, PicURL : x["face_info"][0]["url"]});
+				        
+				    // });
+			});	        
+
+		});	
+	 });
 });
 
 
