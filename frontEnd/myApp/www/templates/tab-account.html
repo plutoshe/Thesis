@@ -1,0 +1,31 @@
+<!-- <ion-view view-title="Account">
+  <ion-content>
+    <ion-list>
+    <ion-toggle  ng-model="settings.enableFriends">
+        Enable Friends
+    </ion-toggle>
+    </ion-list>
+  </ion-content>
+</ion-view> -->
+
+<ion-view class="has-header padding">
+	<!-- <ion-content>
+		<ion-list>
+			<br>
+			<br>
+			<button class="button button-energized" ng-click="addImage()">
+
+				Add image
+			</button>
+			<ion-scroll>
+				<img ng-repeat="image in images" ng-src="{{urlForImage(image)}}" height="200px"/>
+			</ion-scroll>		
+		</ion-list>
+	</ion-content>  -->
+
+	<ion-content>
+    <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+    <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
+    <button class="button button-energized" ng-click="addImage()">Take Picture</button>
+	</ion-content>
+</ion-view>

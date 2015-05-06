@@ -1,0 +1,38 @@
+<ion-view view-title="takephoto" name = "takephoto">
+<ion-nav-bar>
+  <ion-nav-back-button>
+  </ion-nav-back-button>
+</ion-nav-bar>
+  <ion-content class="padding">
+    <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+    <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
+    <button class="button button-energized" ng-click="addImage()">Take Picture</button>    
+    <!-- <div class="bar bar-subheader"> -->
+      <div class=" button-bar">
+        <button class="button button-light button-android" ng-class="{ 'button\-positive': demo == 'ios' }" ng-click="setPlatform('ios')">
+          iOS
+        </button>
+        <button class="button button-light button-android" ng-class="{ 'button\-positive': demo == 'android' }" ng-click="setPlatform('android')">
+          Android
+        </button>
+        <button class="button button-light button-android" ng-class="{ 'button\-positive': demo == 'ionic' }" ng-click="setPlatform('ionic')">
+          Ionic
+        </button>
+
+        <form  action="/refresh" method = "post" enctype="multipart/form-data">
+                    FirstName:<input type="text" name="FirstName">
+                    LastName:<input type="text" name="LastName">
+
+                    <input type="file" name="pic" id="take-picture" accept="image/*">
+                    
+                    <input type="submit"  value="Submit">
+                </form>
+      </div>
+      <button>
+      	submit
+      </button>
+    <!-- </div> -->
+  </ion-content>
+</ion-view>
+
+
