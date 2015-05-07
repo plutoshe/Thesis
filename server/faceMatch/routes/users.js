@@ -36,6 +36,10 @@ router.get("/test", function(req, res) {
 	
 });
 
+router.post('/getImage', function(req, res) {
+	console.log("linked");
+});
+
 router.post('/refresh', multipartMiddleware, function(req, res) {
 	// var detectParams = {
  //        img :

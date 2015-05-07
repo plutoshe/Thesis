@@ -13,7 +13,7 @@
                 try {
                     // Get window.URL object
                     var URL = window.URL || window.webkitURL;
-
+                    
                     // Create ObjectURL
                     var imgURL = URL.createObjectURL(file);
 

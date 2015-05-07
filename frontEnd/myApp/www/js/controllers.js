@@ -82,7 +82,7 @@ angular.module('starter.controllers', [])
   
        var options = { 
             quality : 75, 
-            destinationType : Camera.DestinationType.DATA_URL, 
+            destinationType : Camera.DestinationType.DATA_URL,  //Camera.DestinationType.FILE_URI 
             sourceType : Camera.PictureSourceType.CAMERA, 
             allowEdit : true,
             encodingType: Camera.EncodingType.JPEG,
@@ -94,14 +94,138 @@ angular.module('starter.controllers', [])
  
         $cordovaCamera.getPicture(options).then(function(imageData) {
             $scope.imgURI = "data:image/jpeg;base64," + imageData;
+            $scope.lastPhoto = dataURItoBlob("data:image/jpeg;base64,"+imageData);
+            // $scope.picData = imgURI;
+        	$scope.$apply();
         }, function(err) {
             // An error occured. Show a message to the user
         });
+         
 
+        $cordovaFile.uploadFile("http://192.168.56.1:1337/file/upload", "/android_asset/www/img/ionic.png", options).then(function(result) {
+            console.log("SUCCESS: " + JSON.stringify(result.response));
+        }, function(err) {
+            console.log("ERROR: " + JSON.stringify(err));
+        }, function (progress) {
+            // constant progress updates
+        });
+
+	}
+	$scope.send = function() {
+		var myImg = $scope.imgURI;
+        // var options = new FileUploadOptions();
+        // options.fileKey="post";
+        // options.chunkedMode = false;
+
+        var options = {
+            fileKey: "avatar",
+            fileName: "image.png",
+            chunkedMode: false,
+            mimeType: "image/png"
+        };
+
+        // var params = {};
+        // params.user_token = localStorage.getItem('auth_token');
+        // params.user_email = localStorage.getItem('email');
+        // options.params = params;
+        // var ft = new FileTransfer();
+        // ft.upload(myImg, encodeURI("https://example.com/posts/"), onUploadSuccess, onUploadFail, options);
 	}
 })
 
-.controller('AccountCtrl', function($scope, $cordovaCamera, $cordovaFile) {
+.controller('AccountCtrl', function($scope, $http, $cordovaImagePicker, $cordovaCamera, $cordovaFile) {
+	$scope.getPhoto = function() {
+		options = {
+			// quality : 50,
+			destinationType : Camera.DestinationType.FILE_URI,//Camera.DestinationType.DATA_URL,//
+			sourceType : Camera.PictureSourceType.PHOTOLIBRARY, //Camera.PictureSourceType.CAMEA,//
+			targetWidth : 300,
+			targetHeight : 300,
+			// encodingType : 0,
+			encodingType: Camera.EncodingType.JPEG,
+			allowEdit : true,
+			cameraDirection : 1,
+			popoverOptions: CameraPopoverOptions,
+      		saveToPhotoAlbum: false
+		}
+		$cordovaCamera.getPicture(options).then(function(imageURI) {
+            $scope.imgURI = imageURI
+            console.log("=================================")
+            console.log("image URI ", imageURI)
+        }, function(err) {
+            // An error occured. Show a message to the user
+        });
+	}
+});
+
+    // Camera.getPicture().then(function(imageURI) {
+    //     console.log(imageURI);
+    //     $scope.lastPhoto = imageURI;
+    //     $scope.upload(); <-- call to upload the pic
+    // },
+    // function(err) {
+    //     console.err(err);
+    // }, {
+    //     quality: 75,
+    //     targetWidth: 320,
+    //     targetHeight: 320,
+    //     saveToPhotoAlbum: false
+    
+
+
+ //    navigator.camera.getPicture(onSuccess, onFail, { quality: 75, targetWidth: 320,
+ //    targetHeight: 320, destinationType: 0 }); 
+ //    //destination type was a base64 encoding
+ //    function onSuccess(imageData) {
+ //        //preview image on img tag
+ //        $('#image-preview').attr('src', "data:image/jpeg;base64,"+imageData);
+ //        //setting scope.lastPhoto 
+ //        $scope.lastPhoto = dataURItoBlob("data:image/jpeg;base64,"+imageData);
+ //    }
+ //    function onFail(message) {
+ //        alert('Failed because: ' + message);
+ //    }
+ //    }
+
+	// function dataURItoBlob(dataURI) {
+	// // convert base64/URLEncoded data component to raw binary data held in a string
+	//  var byteString = atob(dataURI.split(',')[1]);
+	//  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+	//  var ab = new ArrayBuffer(byteString.length);
+	//  var ia = new Uint8Array(ab);
+	//  for (var i = 0; i < byteString.length; i++)
+	//  {
+	//     ia[i] = byteString.charCodeAt(i);
+	//  }
+
+	//  var bb = new Blob([ab], { "type": mimeString });
+	//  return bb;
+	// }
+	// $scope.upload = function() {
+	//     var url = '';
+	//     var fd = new FormData();
+
+	//     //previously I had this
+	//     //angular.forEach($scope.files, function(file){
+	//         //fd.append('image',file)
+	//     //});
+
+	//     fd.append('image', $scope.lastPhoto);
+
+	//     $http.post(url, fd, {
+
+	//         transformRequest:angular.identity,
+	//         headers:{'Content-Type':"image/jpeg"
+	//         }
+	//     })
+	//     .success(function(data, status, headers){
+	//         $scope.imageURL = data.resource_uri; //set it to the response we get
+	//     })
+	//     .error(function(data, status, headers){
+
+	//     })
+	// }
 	// $ionicPopover.fromTemplateUrl('templates/popover.html', function(popover) {
 	//     $scope.popover = popover;
 	//   });
@@ -111,105 +235,104 @@ angular.module('starter.controllers', [])
  //  };
  	// $scope.images = [];
  
-    $scope.addImage = function() {
-        console.log("add image");
-  //   }
+ //    $scope.addImage = function() {
+ //        console.log("add image");
+ //  //   }
  
-    $scope.urlForImage = function(imageName) {
-        console.log("get correct path for image");
-    }
-    $scope.images = [];
+ //    $scope.urlForImage = function(imageName) {
+ //        console.log("get correct path for image");
+ //    }
+ //    $scope.images = [];
  
-	$scope.addImage = function() {
-	 // 2
-	 	console.log("in addImage")
-		 // var options = {
-		 // destinationType : Camera.DestinationType.FILE_URI,
-		 // sourceType : Camera.PictureSourceType.CAMERA, // Camera.PictureSourceType.PHOTOLIBRARY
-		 // allowEdit : false,
-		 // encodingType: Camera.EncodingType.JPEG,
-		 // popoverOptions: CameraPopoverOptions,
-		 // };
-		 var options = { 
-            quality : 75, 
-            destinationType : Camera.DestinationType.DATA_URL, 
-            sourceType : Camera.PictureSourceType.CAMERA, 
-            allowEdit : true,
-            encodingType: Camera.EncodingType.JPEG,
-            targetWidth: 400,
-            targetHeight: 400,
-            popoverOptions: CameraPopoverOptions,
-            saveToPhotoAlbum: false
-        };
-		 var file_options = {
-            fileKey: "avatar",
-            fileName: "image.png",
-            chunkedMode: false,
-            mimeType: "image/png"
-        };
-		 // 3
-		 $cordovaCamera.getPicture(options).then(function(imageData) {
+	// $scope.addImage = function() {
+	//  // 2
+	//  	console.log("in addImage")
+	// 	 // var options = {
+	// 	 // destinationType : Camera.DestinationType.FILE_URI,
+	// 	 // sourceType : Camera.PictureSourceType.CAMERA, // Camera.PictureSourceType.PHOTOLIBRARY
+	// 	 // allowEdit : false,
+	// 	 // encodingType: Camera.EncodingType.JPEG,
+	// 	 // popoverOptions: CameraPopoverOptions,
+	// 	 // };
+	// 	 var options = { 
+ //            quality : 75, 
+ //            destinationType : Camera.DestinationType.DATA_URL, 
+ //            sourceType : Camera.PictureSourceType.CAMERA, 
+ //            allowEdit : true,
+ //            encodingType: Camera.EncodingType.JPEG,
+ //            targetWidth: 400,
+ //            targetHeight: 400,
+ //            popoverOptions: CameraPopoverOptions,
+ //            saveToPhotoAlbum: false
+ //        };
+	// 	 var file_options = {
+ //            fileKey: "avatar",
+ //            fileName: "image.png",
+ //            chunkedMode: false,
+ //            mimeType: "image/png"
+ //        };
+	// 	 // 3
+		 // $cordovaCamera.getPicture(options).then(function(imageData) {
 		 
-			 // 4
-			 onImageSuccess(imageData);
+			//  // 4
+			//  onImageSuccess(imageData);
 			 
-			 function onImageSuccess(fileURI) {
-			 createFileEntry(fileURI);
-			 }
+			//  function onImageSuccess(fileURI) {
+			//  createFileEntry(fileURI);
+			//  }
 			 
-			 function createFileEntry(fileURI) {
-			 window.resolveLocalFileSystemURL(fileURI, copyFile, fail);
-			 }
+			//  function createFileEntry(fileURI) {
+			//  window.resolveLocalFileSystemURL(fileURI, copyFile, fail);
+			//  }
 			 
-			 // 5
-			 function copyFile(fileEntry) {
-			 var name = fileEntry.fullPath.substr(fileEntry.fullPath.lastIndexOf('/') + 1);
-			 var newName = makeid() + name;
+			//  // 5
+			//  function copyFile(fileEntry) {
+			//  var name = fileEntry.fullPath.substr(fileEntry.fullPath.lastIndexOf('/') + 1);
+			//  var newName = makeid() + name;
 			 
-			 window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(fileSystem2) {
-			 fileEntry.copyTo(
-			 fileSystem2,
-			 newName,
-			 onCopySuccess,
-			 fail
-			 );
-			 },
-			 fail);
-			 }
+			//  window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function(fileSystem2) {
+			//  fileEntry.copyTo(
+			//  fileSystem2,
+			//  newName,
+			//  onCopySuccess,
+			//  fail
+			//  );
+			//  },
+			//  fail);
+			//  }
 			 
-			 // 6
-			 function onCopySuccess(entry) {
-			 $scope.$apply(function () {
-			 $scope.images.push(entry.nativeURL);
-			 });
-			 }
+			//  // 6
+			//  function onCopySuccess(entry) {
+			//  $scope.$apply(function () {
+			//  $scope.images.push(entry.nativeURL);
+			//  });
+			//  }
 			 
-			 function fail(error) {
-			 console.log("fail: " + error.code);
-			 }
+			//  function fail(error) {
+			//  console.log("fail: " + error.code);
+			//  }
 			 
-			 function makeid() {
-			 var text = "";
-			 var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			//  function makeid() {
+			//  var text = "";
+			//  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 			 
-			 for (var i=0; i < 5; i++) {
-			 text += possible.charAt(Math.floor(Math.random() * possible.length));
-			 }
-			 return text;
-			 }
+			//  for (var i=0; i < 5; i++) {
+			//  text += possible.charAt(Math.floor(Math.random() * possible.length));
+			//  }
+			//  return text;
+			//  }
 			 
-		 }, function(err) {
-		 console.log(err);
-		 });
+		 // }, function(err) {
+		 // console.log(err);
+		 // });
        
  
-       //  $cordovaCamera.getPicture(options).then(function(imageData) {
-       //      $scope.imgURI = "data:image/jpeg;base64," + imageData;
-       //  }, function(err) {
-       //      // An error occured. Show a message to the user
-       //  });
+   //      $cordovaCamera.getPicture(options).then(function(imageData) {
+   //          $scope.imgURI = "data:image/jpeg;base64," + imageData;
+   //      }, function(err) {
+   //          // An error occured. Show a message to the user
+   //      });
 
-	}
-});
+
 
 

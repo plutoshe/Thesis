@@ -11,7 +11,7 @@
 <ion-view class="has-header padding">
 	<!-- <ion-content>
 		<ion-list>
-			<br>
+			<br>tak
 			<br>
 			<button class="button button-energized" ng-click="addImage()">
 
@@ -19,13 +19,14 @@
 			</button>
 			<ion-scroll>
 				<img ng-repeat="image in images" ng-src="{{urlForImage(image)}}" height="200px"/>
-			</ion-scroll>		
+			</ion-scroll>		 
 		</ion-list>
 	</ion-content>  -->
-
 	<ion-content>
+	<!-- <input type="file" file-input="files" multiple  onchange="angular.element(this).scope().filesChanged(this);upload();">
+	<button ng-click="upload()">Upload</button> -->
     <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
     <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-    <button class="button button-energized" ng-click="addImage()">Take Picture</button>
+    <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
 	</ion-content>
 </ion-view>
