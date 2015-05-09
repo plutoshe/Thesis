@@ -30,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
+app.post('/getRecentFace', face);
 
 app.post('/refresh', users);
 app.post('/addFaceToPersonbypost', users);

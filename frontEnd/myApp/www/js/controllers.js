@@ -248,29 +248,29 @@ angular.module('starter.controllers', [])
 		fd.append('image', $scope.lastPhoto);
 		// console.log($scope.lastPhoto)
 		// console.log(fd)
-		var querystring = require('querystring'); 
+		// var querystring = require('querystring'); 
 		var req = {
 			method : "POST",
-			url : "http://127.0.0.1/",
+			url : "http://127.0.0.1:3000/",
 			port : 3000,
 			path : '/getImage',
 			headers:{'Content-Type':"image/jpeg"
 	        },
 
-	        data : { fd},
+	        data : { 
+	        	image : fd
+	        },
 
 		}
-	    // $http.post(encodeURI(server), fd, {
-
-	    //     transformRequest:angular.identity,
-	    //     headers:{'Content-Type':"image/jpeg"
-	    //     }
-	    // })
-		console.log(req)
-		console.log("!!!!")
-	    $http(req).success(function(data, status, headers){
+		var upload_url = "http://127.0.0.1:3000/getImage"
+	    $http.post(upload_url, fd, {
+	        transformRequest:angular.identity,
+	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
+	    }).success(function(data, status, headers){
 	    	console.log(status)
-	        $scope.imageURL = data.resource_uri; //set it to the response we get
+	    	console.log(data)
+	    	console.log(headers)
+	        // $scope.imageURL = data.resource_uri; //set it to the response we get
 	    })
 	    .error(function(data, status, headers){
 	    	console.log(status)
