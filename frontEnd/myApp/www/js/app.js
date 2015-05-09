@@ -8,6 +8,8 @@
 // var Firebase = require("firebase");
 // var fb = new Firebase("https://e5pnai2aztu.firebaseio-demo.com/");
 // r fb = new Firebase("https://INSTANCE_ID_HERE.firebaseio.com/");
+
+
 angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 'ngCordova'])
 
 .run(function($ionicPlatform) {

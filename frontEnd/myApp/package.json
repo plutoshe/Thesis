@@ -19,10 +19,12 @@
     "org.apache.cordova.console",
     "com.ionic.keyboard",
     "org.apache.cordova.camera",
-    "cordova-plugin-device",
     "cordova-plugin-camera",
-    "cordova-plugin-file",
     "cordova-plugin-whitelist@1",
+    "org.apache.cordova.file@1.1.0",
+    "org.apache.cordova.file@1.2",
+    "cordova-plugin-whitelist",
+    "cordova-plugin-device",
     "org.apache.cordova.file-transfer"
   ],
   "cordovaPlatforms": [

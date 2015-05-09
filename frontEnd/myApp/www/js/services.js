@@ -8,7 +8,7 @@ angular.module('starter.services', [])
     id: 0,
     name: 'Ben Sparrow',
     lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
+    face: 'http://127.0.0.1:3000/img/LDH.jpg'
   }, {
     id: 1,
     name: 'Max Lynx',
@@ -82,19 +82,37 @@ angular.module('starter.services', [])
 //     };
 
 // })
-.factory('Camera', ['$q', function($q) {
+// .factory('Camera', ['$q', function($q) {
 
+//   return {
+//     getPicture: function(options) {
+//       var q = $q.defer();
+
+//       navigator.camera.getPicture(function(result) {
+//         // Do any magic you need
+//         q.resolve(result);
+//       }, function(err) {
+//         q.reject(err);
+//       }, options);
+
+//       return q.promise;
+//     }
+//   }
+// }]);
+
+.factory('Camera', ['$q', function($q) {
+ 
   return {
     getPicture: function(options) {
       var q = $q.defer();
-
+      
       navigator.camera.getPicture(function(result) {
         // Do any magic you need
         q.resolve(result);
       }, function(err) {
         q.reject(err);
       }, options);
-
+      
       return q.promise;
     }
   }

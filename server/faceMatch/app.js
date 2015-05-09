@@ -35,7 +35,8 @@ app.post('/refresh', users);
 app.post('/addFaceToPersonbypost', users);
 app.post('/addFaceToPersonbypostandurl', users);
 app.post('/getImage', users);
-app.get('/test', users);
+// app.post('/getImage', users);
+// app.get('/test', users);
 app.get('/upload', users);
 
 app.get('/compare', users);

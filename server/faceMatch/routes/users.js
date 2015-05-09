@@ -13,6 +13,7 @@ var async = require('async')
 
 var request = require('request'),
     _ = require('underscore');
+var formidable = require("formidable")
 
 
 /***
@@ -37,8 +38,65 @@ router.get("/test", function(req, res) {
 });
 
 router.post('/getImage', function(req, res) {
+
 	console.log("linked");
+	// fs.writeFile('testfile.jpg', req.route.stack, function(err){
+
+ //        res.send("file successfully created");
+
+ //    });
+console.log(req);
+	res.end();
+	// console.log("Request handler 'upload' was called.");
+ //    var form = new formidable.IncomingForm();
+ //    form.parse(request, function(error, fields, files) {
+
+ //        //logs the file information 
+ //        console.log(JSON.stringify(files))
+
+ //        fs.rename(files.file.path, "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/test.jpg", function(err) {
+ //            if (err) {
+ //                fs.unlink("tmp/test.jpg");
+ //                fs.rename(files.file.path, "tmp/test.jpg");
+ //            }
+ //        });
+ //        // response.writeHead(200, {"Content-Type": "text/html"});
+ //        // response.write("received image:<br/>");
+ //        // response.write("<img src='/show' />");
+ //        response.end();
+ //    });
+
 });
+
+// router.post('/getImage', function(request, response) {
+
+// 	// console.log("linked");
+// 	// fs.writeFile('testfile.jpg', req.route.stack, function(err){
+
+//  //        res.send("file successfully created");
+
+//  //    });
+// 	// res.end();
+// 	console.log("Request handler 'upload' was called.");
+//     var form = new formidable.IncomingForm();
+//     form.parse(request, function(error, fields, files) {
+
+//         //logs the file information 
+//         console.log(JSON.stringify(files))
+
+//         fs.rename(files.file.path, "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/test.jpg", function(err) {
+//             if (err) {
+//                 fs.unlink("tmp/test.jpg");
+//                 fs.rename(files.file.path, "tmp/test.jpg");
+//             }
+//         });
+//         // response.writeHead(200, {"Content-Type": "text/html"});
+//         // response.write("received image:<br/>");
+//         // response.write("<img src='/show' />");
+//         response.end();
+//     });
+
+// });
 
 router.post('/refresh', multipartMiddleware, function(req, res) {
 	// var detectParams = {
