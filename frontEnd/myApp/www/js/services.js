@@ -76,6 +76,25 @@ angular.module('starter.services', [])
     }
   };
 })
+.factory('displayInput', function($http) {
+  var collection;
+
+  var set = function(newObj) {
+     collection = newObj;
+  };
+
+  var get = function(id){
+      if (collection != undefined && id < collection.length)
+        return collection[id]["face_id"];
+      else 
+        return null
+  };
+
+  return {
+    set : set,
+    get : get
+  };
+})
 // .factory("$cipherFactory", function() {
 
 //     return {

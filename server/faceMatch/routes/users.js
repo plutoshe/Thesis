@@ -69,9 +69,13 @@ var contrast = {
 	"Female" : "Male"
 }
 var storePathPrefix = "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/Face/"
+var outputPrefix = "http://localhost:3000/Face/"
 
 
 router.post('/detectImg', function(req, res) {
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
 	dealWithUpdatePhoto(req.body["path"], "", "", true, function(data) {
 		res.send(data);
 		res.end()
@@ -138,14 +142,20 @@ function dealWithUpdatePhoto(imgPath, location, content, returnMatch, returnFunc
 						console.log(res)
 					});
 					console.log(newFace)
+					var MatchGender = gender;
 			        if (returnMatch) {
 			        	console.log("match")
 				        var facesetParam = {
-				        	faceset_id : facesetGroup[gender],
+				        	faceset_id : facesetGroup[MatchGender],
 				        	key_face_id : face_id,
 				        	count : 3
 				        }
 				        facePP.recognition.search(facesetParam, function(err, recognitionRes) {
+				        	console.log(recognitionRes)
+				        	if (recognitionRes["candidate"] != undefined) {
+				        		for (var i = 0; i < recognitionRes["candidate"].length; i++)
+				        			recognitionRes["candidate"][i]["face_id"] = outputPrefix + MatchGender + "/" + recognitionRes["candidate"][i]["face_id"] + '.jpg'
+				        	}
 				        	console.log(recognitionRes)
 				        	returnFunc(recognitionRes)
 							return recognitionRes
@@ -175,7 +185,9 @@ router.get("/faceset/get_info", function(req, res) {
 
 
 router.post('/getImage', function(request, res) {
-
+res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
 	console.log("Request handler 'upload' was called.");
     var form = new formidable.IncomingForm();
     form.parse(request, function(error, fields, files) {

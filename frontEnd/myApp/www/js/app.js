@@ -67,7 +67,7 @@ angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 
     views : {
       'tab-chats' : {
         templateUrl : "templates/display.html",
-        controller : "TakephotoCtrl"
+        controller : "DisplayCtrl"
       }
     }
   })

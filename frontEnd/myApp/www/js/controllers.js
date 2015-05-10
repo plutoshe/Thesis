@@ -67,25 +67,24 @@ angular.module('starter.controllers', [])
 	        
 	}			
 })
-.controller('DisplayCtrl', function($scope, $q) {
-	var index = 0;
-	var pic = [
-	{"face" : "http://localhost:3000/Face/Male/1.jpg"},
-	{"face" : "http://localhost:3000/Face/Male/2.jpg"},
-	{"face" : "http://localhost:3000/Face/Male/3.jpg"},
-	]
-	$scope.picCur = pic[0]["face"]
+.controller('DisplayCtrl', function($scope, $q, displayInput) {
+	// $scope.picCur = pic[0]["face"]
+	$scope.index = 0
+
+	$scope.picCur = displayInput.get($scope.index)
+
 	$scope.nextPhoto = function() {
-		index++
-		if (index < pic.length)
-			$scope.picCur = pic[index]["face"]
-		else 
-			$scope.picCur = undefined
+		console.log("!!!! in nextPhoto")
+		$scope.index++	
+		$scope.picCur = displayInput.get($scope.index)
+		console.log($scope.picCur)
+		// $scope.$apply(); 
 		// console.log(picCur)
 	}
+	
 })
 
-.controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile) {
+.controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile, displayInput) {
 	var index;
 	var pic;
 	window.addEventListener('filePluginIsReady', function(){ console.log('File plugin is ready');}, false);
@@ -103,6 +102,9 @@ angular.module('starter.controllers', [])
 	   // as soon as this function is called File "should" be defined
 	   console.log(File);
 	}
+
+	
+	
 	$scope.getPhoto = function() {
 		console.log("get photo")
 		options = {
@@ -164,15 +166,21 @@ angular.module('starter.controllers', [])
 	        transformRequest:angular.identity,
 	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
 	    }).success(function(data, status, headers){
-	    	index = 0;
-	    	pic = data["data"];
-	    	picCur = pic[0]["face"]
+	    	console.log("success!")
+	    	// $scope.index = 0;
+	    	// $scope.pic = data["candidate"];
+	    	// $scope.picCur = $scope.pic[0]["face_id"]
+	    	displayInput.set(data["candidate"])
+	    	// console.log($scope.picCur)
+	    	// console.log(picCur)
 	    	// console.log(status)
 	    	// console.log(data)
 	    	// console.log(headers)
 
 	    })
 	    .error(function(data, status, headers){
+	    	console.log("error!")
+	    	console.log("status : ", status);
 	    	// console.log(status)
 	    })
 	}
