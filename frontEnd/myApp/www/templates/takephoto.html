@@ -41,19 +41,12 @@
 </ion-nav-bar>
 
   <ion-content>
-  <!-- <input type="file" file-input="files" multiple  onchange="angular.element(this).scope().filesChanged(this);upload();">
-  <button ng-click="upload()">Upload</button> -->
 
     <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
     
     <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-     
-  <!-- <img ng-src="file:///Users/plutoshe/Library/Developer/CoreSimulator/Devices/5AEAF4FF-986B-4B2C-8A3D-A81E8EF285BD/data/Containers/Data/Application/A4D78728-7850-45F6-817A-B41A04A69C4E/tmp/cdv_photo_032.jpg"> -->
-    <!-- <img id="newss"> -->
-    <!-- <img ng-src="file:///Users/plutoshe/Library/Developer/CoreSimulator/Devices/5AEAF4FF-986B-4B2C-8A3D-A81E8EF285BD/data/Containers/Data/Application/E0C98EB5-1930-46E1-B84F-6264F49D76AA/tmp/cdv_photo_016.jpg"> -->
-    <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
-    <button class="button button-energized" ng-click="tranferFile()">Transfer</button>
-    <button>submit</button>
+  <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
+    <button class="button button-energized" ng-click="tranferFile()" href='#/tab/chats/display'>Transfer</button>
   </ion-content>
 </ion-view>
 

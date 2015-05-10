@@ -37,16 +37,6 @@ angular.module('starter.controllers', [])
 	$scope.popover = popover;
 	});
 
-	// $ionicPopover.fromTemplateUrl('templates/popover.html', {
-	// scope: $scope,
-	// }).then(function(popover) {
-	// $scope.popover = popover;
-	// });
-
-	// $ionicPopover.fromTemplateUrl('templates/popover.html', function(popover) {
-	//     $scope.popover = popover;
-	//   });
-
 	$scope.openPopover = function($event) {
 		$scope.popover.show($event);
 	};
@@ -76,75 +66,92 @@ angular.module('starter.controllers', [])
 	}			
 })
 
-// .controller('imageController', function($scope, $cordovaCamera, $cordovaFile) {
-    
-// });
+.controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile) {
+	window.addEventListener('filePluginIsReady', function(){ console.log('File plugin is ready');}, false);
+	document.addEventListener("deviceready", onDeviceReady, false);
+	function onDeviceReady() {
+	    console.log(device.cordova);
+	}
+	document.addEventListener("deviceready", onDeviceReady, false);
+	function onDeviceReady() {
+	   // as soon as this function is called FileTransfer "should" be defined
+	   console.log(FileTransfer);
+	}
+	document.addEventListener("deviceready", onDeviceReady, false);
+	function onDeviceReady() {
+	   // as soon as this function is called File "should" be defined
+	   console.log(File);
+	}
+	$scope.getPhoto = function() {
+		console.log("get photo")
+		options = {
+			// quality : 50,
+			destinationType : Camera.DestinationType.DATA_URL,//Camera.DestinationType.FILE_URI,//
+			sourceType : Camera.PictureSourceType.PHOTOLIBRARY, //Camera.PictureSourceType.CAMEA,//Camera.PictureSourceType.CAMERA, //
+			targetWidth : 300,
+			targetHeight : 300,
+			// encodingType : 0,
+			encodingType: Camera.EncodingType.JPEG,
+			allowEdit : true,
+			cameraDirection : 1,
+			popoverOptions: CameraPopoverOptions,
+      		saveToPhotoAlbum: false
+		}
+		$cordovaCamera.getPicture(options).then(function(imageData) {
+            $scope.imgURI  = "data:image/jpeg;base64,"+imageData
+            $scope.lastPhoto = dataURItoBlob("data:image/jpeg;base64,"+imageData);
+        }, function(err) {
+            // An error occured. Show a message to the user
+        });
 
-// .controller('TakephotoCtrl', function($scope, $cordovaCamera, $cordovaFile, imgURI) {
+	}
 
-// 	$scope.setPlatform = function(p) {
-//     document.body.classList.remove('platform-ios');
-//     document.body.classList.remove('platform-android');
-//     document.body.classList.add('platform-' + p);
-//     $scope.demo = p;
-//   	}
+	function dataURItoBlob(dataURI) {
+	// convert base64/URLEncoded data component to raw binary data held in a string
+	 var byteString = atob(dataURI.split(',')[1]);
+	 var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
 
-//     $scope.addImage = function() {
-//         console.log("add image");
-  
-//        var options = { 
-//             quality : 75, 
-//             destinationType : Camera.DestinationType.DATA_URL,  //Camera.DestinationType.FILE_URI 
-//             sourceType : Camera.PictureSourceType.CAMERA, 
-//             allowEdit : true,
-//             encodingType: Camera.EncodingType.JPEG,
-//             targetWidth: 400,
-//             targetHeight: 400,
-//             popoverOptions: CameraPopoverOptions,
-//             saveToPhotoAlbum: false
-//         };
- 
-//         $cordovaCamera.getPicture(options).then(function(imageData) {
-//             $scope.imgURI = "data:image/jpeg;base64," + imageData;
-//             $scope.lastPhoto = dataURItoBlob("data:image/jpeg;base64,"+imageData);
-//             // $scope.picData = imgURI;
+	 var ab = new ArrayBuffer(byteString.length);
+	 var ia = new Uint8Array(ab);
+	 for (var i = 0; i < byteString.length; i++)
+	 {
+	    ia[i] = byteString.charCodeAt(i);
+	 }
 
-//         	$scope.$apply();
-//         }, function(err) {
-//             // An error occured. Show a message to the user
-//         });
-         
+	 var bb = new Blob([ab], { "type": mimeString });
+	 return bb;
+	}
 
-//         $cordovaFile.uploadFile("http://192.168.56.1:1337/file/upload", "/android_asset/www/img/ionic.png", options).then(function(result) {
-//             console.log("SUCCESS: " + JSON.stringify(result.response));
-//         }, function(err) {
-//             console.log("ERROR: " + JSON.stringify(err));
-//         }, function (progress) {
-//             // constant progress updates
-//         });
+	$scope.tranferFile = function() {
+		console.log("tranfer file")
+		var fd = new FormData();
+		fd.append('image', $scope.lastPhoto);
+		var req = {
+			method : "POST",
+			url : "http://127.0.0.1:3000/",
+			port : 3000,
+			path : '/getImage',
+			headers:{'Content-Type':"image/jpeg"
+	        },
+	        data : { 
+	        	image : fd
+	        },
 
-// 	}
-// 	$scope.send = function() {
-// 		var myImg = $scope.imgURI;
-//         // var options = new FileUploadOptions();
-//         // options.fileKey="post";
-//         // options.chunkedMode = false;
-
-//         var options = {
-//             fileKey: "avatar",
-//             fileName: "image.png",
-//             chunkedMode: false,
-//             mimeType: "image/png"
-//         };
-
-//         // var params = {};
-//         // params.user_token = localStorage.getItem('auth_token');
-//         // params.user_email = localStorage.getItem('email');
-//         // options.params = params;
-//         // var ft = new FileTransfer();
-//         // ft.upload(myImg, encodeURI("https://example.com/posts/"), onUploadSuccess, onUploadFail, options);
-// 	}
-// })
+		}
+		var upload_url = "http://127.0.0.1:3000/getImage"
+	    $http.post(upload_url, fd, {
+	        transformRequest:angular.identity,
+	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
+	    }).success(function(data, status, headers){
+	    	console.log(status)
+	    	console.log(data)
+	    	console.log(headers)
+	    })
+	    .error(function(data, status, headers){
+	    	console.log(status)
+	    })
+	}
+})
 
 .controller('AccountCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile) {
 
