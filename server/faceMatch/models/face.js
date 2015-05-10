@@ -1,12 +1,17 @@
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment')
 // var location = new mongoose.Schema ({
 //     name : String,
 //     id : Number 
 // });
 
 //var entity = new Schema({ index : Number, title : String, body: String, date: Date, like : Number });
+// var connection = mongoose.createConnection("mongodb://localhost/thesis");
+var connection = mongoose.connect('localhost', 'thesis');
+ 
+autoIncrement.initialize(connection);
 
-var face = new mongoose.Schema ({
+var faceSchema = new mongoose.Schema ({
         gender : Number,
         location : String,
         content : String, 
@@ -22,11 +27,13 @@ var face = new mongoose.Schema ({
 
 });
 
-var overall = new mongoose.Schema ({
-        lastIndex : Number
-})
+// var overall = new mongoose.Schema ({
+//         lastIndex : Number
+// })
 
 
+faceSchema.plugin(autoIncrement.plugin, {model : 'face', filed : "itemID", startAt : 0, incrementBy : 1});
+var facepp = connection.model('face', faceSchema);
 // var version = new mongoose.Schema ({
 // 		isCurrent : Number,
 //         version : String,
@@ -43,7 +50,8 @@ var overall = new mongoose.Schema ({
 
 // exports.location = mongoose.model('newLocation', location);;
 exports.face = mongoose.model('face');
-exports.overall = mongoose.model('overall');
+exports.db = connection
+// exports.overall = mongoose.model('overall');
 // exports.newVersion = mongoose.model('newVersion');
 
 

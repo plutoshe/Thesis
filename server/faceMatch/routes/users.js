@@ -14,6 +14,10 @@ var async = require('async')
 var request = require('request'),
     _ = require('underscore');
 var formidable = require("formidable")
+var mongoose = require("mongoose")
+var models = require('../models/face');
+var faceModel = models.face;
+var db = models.db
 
 
 /***

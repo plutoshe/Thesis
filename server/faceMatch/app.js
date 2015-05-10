@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var face = require('./routes/face')
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use('/', routes);
 app.use('/users', users);
 
 app.post('/getRecentFace', face);
+app.post('/newface', face)
 
 app.post('/refresh', users);
 app.post('/addFaceToPersonbypost', users);
