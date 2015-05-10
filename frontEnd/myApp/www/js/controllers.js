@@ -65,8 +65,27 @@ angular.module('starter.controllers', [])
 	        
 	}			
 })
+.controller('DisplayCtrl', function($scope, $q) {
+	var index = 0;
+	var pic = [
+	{"face" : "http://localhost:3000/Face/Male/1.jpg"},
+	{"face" : "http://localhost:3000/Face/Male/2.jpg"},
+	{"face" : "http://localhost:3000/Face/Male/3.jpg"},
+	]
+	$scope.picCur = pic[0]["face"]
+	$scope.nextPhoto = function() {
+		index++
+		if (index < pic.length)
+			$scope.picCur = pic[index]["face"]
+		else 
+			$scope.picCur = undefined
+		// console.log(picCur)
+	}
+})
 
 .controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile) {
+	var index;
+	var pic;
 	window.addEventListener('filePluginIsReady', function(){ console.log('File plugin is ready');}, false);
 	document.addEventListener("deviceready", onDeviceReady, false);
 	function onDeviceReady() {
@@ -121,7 +140,7 @@ angular.module('starter.controllers', [])
 	 var bb = new Blob([ab], { "type": mimeString });
 	 return bb;
 	}
-
+	
 	$scope.tranferFile = function() {
 		console.log("tranfer file")
 		var fd = new FormData();
@@ -143,12 +162,16 @@ angular.module('starter.controllers', [])
 	        transformRequest:angular.identity,
 	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
 	    }).success(function(data, status, headers){
-	    	console.log(status)
-	    	console.log(data)
-	    	console.log(headers)
+	    	index = 0;
+	    	pic = data["data"];
+	    	picCur = pic[0]["face"]
+	    	// console.log(status)
+	    	// console.log(data)
+	    	// console.log(headers)
+
 	    })
 	    .error(function(data, status, headers){
-	    	console.log(status)
+	    	// console.log(status)
 	    })
 	}
 })

@@ -1,7 +1,6 @@
 
 
 angular.module('starter.services', [])
-
 .factory('Chats', function($http, $q) {
   // Might use a resource here that returns a JSON array
 
@@ -34,7 +33,6 @@ angular.module('starter.services', [])
   // }];
   
   var chats = $q.defer();
-
   $http({
     method: 'POST',
     url: 'http://localhost:3000/getRecentFace',
@@ -71,7 +69,7 @@ angular.module('starter.services', [])
       chats.splice(chats.indexOf(chat), 1);
     },
     get: function(chatId) {
-      
+
       // if (chatId < chats.size())
       // return chats[chatId];
     // else return null;

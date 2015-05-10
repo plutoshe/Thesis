@@ -67,7 +67,7 @@ angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 
     views : {
       'tab-chats' : {
         templateUrl : "templates/display.html",
-        controller : "displayCtrl"
+        controller : "TakephotoCtrl"
       }
     }
   })
@@ -103,8 +103,8 @@ angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 
     url: '/account',
     views: {
       'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+        templateUrl: 'templates/display.html',
+        controller: 'DisplayCtrl'
       }
     }
   });

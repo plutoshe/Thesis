@@ -41,7 +41,7 @@ router.get("/test", function(req, res) {
 	
 });
 
-router.post('/getImage', function(request, response) {
+router.post('/getImage', function(request, res) {
 
 	console.log("Request handler 'upload' was called.");
     var form = new formidable.IncomingForm();
@@ -56,10 +56,11 @@ router.post('/getImage', function(request, response) {
                 fs.rename(files.image.path, "tmp/test.jpg");
             }
         });
+        // res.push()
         // response.writeHead(200, {"Content-Type": "text/html"});
         // response.write("received image:<br/>");
         // response.write("<img src='/show' />");
-        response.end();
+        // res.end();
     });
 
 });
