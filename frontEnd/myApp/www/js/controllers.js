@@ -9,10 +9,12 @@ angular.module('starter.controllers', [])
 
 .controller('ChatsCtrl', function($scope, $ionicPopover, Chats) {
   // $scope.chats = Chats.all().then(function());
-  $scope.chats = [{content: 'Loading..'}];
+  $scope.chats = [];
   Chats.all().then(
     function(res){
+    // $scope.load = 0;
       $scope.chats = res;
+
     },
     function(err){
       console.error(err);

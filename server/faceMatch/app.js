@@ -39,7 +39,11 @@ app.post('/addFaceToPersonbypost', users);
 app.post('/addFaceToPersonbypostandurl', users);
 app.post('/getImage', users);
 
-
+app.get("/faceset/get_info", users)
+app.get('/train/search', users)
+app.post('/detectImg', users)
+app.post('/createFaceset', users)
+app.post('/addFaceToFaceset', users)
 // app.post('/getImage', users);
 // app.get('/test', users);
 app.get('/upload', users);

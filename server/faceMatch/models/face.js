@@ -6,7 +6,7 @@ var connection = mongoose.connect('localhost', 'thesis');
 autoIncrement.initialize(connection);
 
 var faceSchema = new mongoose.Schema ({
-        gender : Number,
+        gender : String,
         location : String,
         content : String, 
         updateTime: { type: Date, default: Date.now },

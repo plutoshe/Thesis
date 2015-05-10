@@ -34,7 +34,7 @@
 </ion-view>
  -->
 
-<ion-view class="has-header padding" view-title="takephoto" name = "takephoto">
+<ion-view  view-title="takephoto" name = "takephoto">
 <ion-nav-bar>
   <ion-nav-back-button>
   </ion-nav-back-button>
@@ -46,7 +46,7 @@
     
     <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
   <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
-    <button class="button button-energized" ng-click="tranferFile()" href='#/tab/chats/display'>Transfer</button>
+    <a href='#/tab/chats/display'><button class="button button-energized" ng-click="tranferFile()" >Transfer</button></a>
   </ion-content>
 </ion-view>
 

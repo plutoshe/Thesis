@@ -103,8 +103,8 @@ angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 
     url: '/account',
     views: {
       'tab-account': {
-        templateUrl: 'templates/display.html',
-        controller: 'DisplayCtrl'
+        templateUrl: 'templates/tab-account.html',
+        controller: 'AccountCtrl'
       }
     }
   });

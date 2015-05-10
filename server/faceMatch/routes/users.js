@@ -18,7 +18,7 @@ var mongoose = require("mongoose")
 var models = require('../models/face');
 var faceModel = models.face;
 var db = models.db
-
+var express = require('express')
 
 /***
 GET REQUEST :
@@ -35,27 +35,164 @@ var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var fs = require('fs');
 var path = require('path');
+var faceModel = models.face;
+
+router.get("/train/search", function(req, res) {
+	trainSearch(facesetGroup["Male"])
+	trainSearch(facesetGroup["Female"])
+	res.end()
+});
+
+function trainSearch(faceset_id) {
+	var trainParams = {
+		faceset_id : faceset_id,
+	};
+	facePP.train.search(trainParams, function(err, trainRes) {
+		// res.send(personRes);
+		// res.end();
+		return
+		
+	});
+}
 
 router.get("/test", function(req, res) {
 	res.render("demonstrate", { similarity : 99, PicURL : "/img/CYX1.jpg"});
 	
 });
 
+var facesetGroup = {
+	"Male" : "ccea67ddc63e88c8c2c1191b6b31e9ff",
+	"Female" : "4ad51ce5bc969f6acc01a1b9a0d56ddd",
+}
+var contrast = {
+	"Male" : "Female",
+	"Female" : "Male"
+}
+var storePathPrefix = "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/Face/"
+
+
+router.post('/detectImg', function(req, res) {
+	dealWithUpdatePhoto(req.body["path"], "", "", true, function(data) {
+		res.send(data);
+		res.end()
+	})
+})
+
+
+
+function dealWithUpdatePhoto(imgPath, location, content, returnMatch, returnFunc) {
+	var gm = require('gm');
+		// var fs = require('fs');
+	var imageMagick = gm.subClass({ imageMagick : true });
+ 	// console.log(req.files.pic["path"]);
+ 	var srcPath = path.join(imgPath);
+ 	var dstPath = path.join(imgPath);
+ 	// console.log(srcPath, " ", dstPath);
+ 	imageMagick(srcPath).resize(600, 480, '!') .autoOrient().write(dstPath, function(err) {
+	    
+		var url = facePP.baseUrl + '/detection/detect';
+		var r = request.post(url, requestCallback)
+		var form = r.form();
+		form.append("api_key", facePP.api_key);
+		form.append("api_secret", facePP.api_secret);
+		form.append("img", fs.createReadStream(path.join(dstPath)));
+		form.append("mode", "oneface");
+	    // form = r.form();
+	    // form.append("img", data);
+
+	    function requestCallback(err, res) {
+	        if (err) {
+	        	returnFunc(Error('send request error %s', err));
+	            return Error('send request error %s', err);
+	        }
+	        
+	        result = JSON.parse(res.body)
+	        console.log(result);
+	        if (result["face"].length == 0) {
+	        	return
+	        }
+	        var gender = result["face"][0]["attribute"]["gender"]["value"]
+	        var face_id = result["face"][0]["face_id"]
+	        console.log("rename")
+	        console.log(storePathPrefix + gender + "/" + face_id + ".jpg")
+			fs.rename(dstPath, storePathPrefix + gender + "/" + face_id + ".jpg", function(err) {
+	            if (err) {
+	            	return ""
+	                // fs.unlink("tmp/test.jpg");
+	                // fs.rename(files.image.path, "tmp/test.jpg");
+	            }
+	            console.log("new Face db")
+	            var facesetParams = {
+		        	faceset_id : facesetGroup[gender],
+		        	face_id : face_id,
+		        	
+		        }
+		        facePP.faceset.add_face(facesetParams, function(err, res) {
+		        	if (err) {
+		        		returnFunc(err)
+		        		return err
+		        	}
+		        	console.log(res)
+		            var newFace = new faceModel({location : location, updateTime: new Date(), content : content, gender : gender, face : face_id});
+					newFace.save(function(res) {
+						console.log(res)
+					});
+					console.log(newFace)
+			        if (returnMatch) {
+			        	console.log("match")
+				        var facesetParam = {
+				        	faceset_id : facesetGroup[gender],
+				        	key_face_id : face_id,
+				        	count : 3
+				        }
+				        facePP.recognition.search(facesetParam, function(err, recognitionRes) {
+				        	console.log(recognitionRes)
+				        	returnFunc(recognitionRes)
+							return recognitionRes
+						});
+				    } else {
+				    	returnFunc("")
+				    	return "";
+				    }  
+				});
+	        });
+	        
+	        
+	         
+	    }
+	});
+}
+
+router.get("/faceset/get_info", function(req, res) {
+	var facesetParams = {
+		faceset_name : "Male",
+	};
+	facePP.faceset.get_info(facesetParams, function (err, facesetRes) {
+		res.send(facesetRes)
+		res.end()
+	});
+})
+
+
 router.post('/getImage', function(request, res) {
 
 	console.log("Request handler 'upload' was called.");
     var form = new formidable.IncomingForm();
     form.parse(request, function(error, fields, files) {
+	 	//logs the file information 
+	        // console.log(JSON.stringify(files))
+        dealWithUpdatePhoto(files.image.path, "", "", true, function(data) {
+			res.send(data);
+			res.end()
+		});
+	        
+        // fs.rename(files.image.path, "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/test.jpg", function(err) {
+        //     if (err) {
+        //         fs.unlink("tmp/test.jpg");
+        //         fs.rename(files.image.path, "tmp/test.jpg");
+        //     }
+        // });
 
-        //logs the file information 
-        console.log(JSON.stringify(files))
-
-        fs.rename(files.image.path, "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/test.jpg", function(err) {
-            if (err) {
-                fs.unlink("tmp/test.jpg");
-                fs.rename(files.image.path, "tmp/test.jpg");
-            }
-        });
         // res.push()
         // response.writeHead(200, {"Content-Type": "text/html"});
         // response.write("received image:<br/>");
@@ -330,70 +467,16 @@ router.post('/addFaceToPersonbypostandurl', function(req, res) {
 
 // 	});
 
+
 router.get('/detect', function(req, res) {
 
+ 	var url = facePP.baseUrl + '/detection/detect';
 
-	// var data = fs.createReadStream(path.join("/Users/plutoshe/Desktop/2152-1etjcob.jpg"));
-	// var detectParams = {
- //   		img : data,
- //        mode: 'normal'
- //    };
-	// facePP.detection.detect(detectParams, function (err, faceRes) {
-	//     var nowId = faceRes.face[0].face_id;
-	// 	var recoginitionParam = {
-	// 		face_id1 : nowId,
-	// 		face_id2 : "f8d2583907d894bb955582664422968a"
-	// 	};
-	// 	facePP.recognition.compare(recoginitionParam, function(err, recogRes) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 			res.end();
-	// 		}
-	// 		res.send(recogRes);
-	// 		console.log("compare finished");
-	// 	});		        
-
-	// });	
-
-
-	// fs.readFile('/Users/plutoshe/Desktop/b.jpg', function(err, data) {
-	 	var url = facePP.baseUrl + '/detection/detect';
-
-
-
-	// var img = new Buffer(filePath.data, 'binary').toString('base64');
-		// if (err) throw err;
-		// var detectParams = {
-	        
-	 //        mode: 'normal'
-	 //    };
-
-
-		// facePP.detection.detect(detectParams, function (err, faceRes) {
-	 //        // to do something 
-	        
-	 //        console.log("!!")
-	 //        console.log(faceRes)
-	 //        // res.send(faceRes)
-
-	 //    });
-
-	    // var qsParams = {
-	    //         api_key: facePP.api_key,
-	    //         api_secret: facePP.api_secret,
-	    //         mode : "normal",
-	    //         img : data
-	    //     };
-
-	    // qsParams = _.extend(qsParams, detectParams);
-
-	    // request.post(url, {qs: qsParams}, requestCallback);
 	    var r = request.post(url, requestCallback)
 		var form = r.form();
-		// console.log(data);
 		form.append("api_key", facePP.api_key);
 		form.append("api_secret", facePP.api_secret);
-		form.append("img", fs.createReadStream(path.join("/Users/plutoshe/Desktop/3.jpg")));
+		form.append("img", fs.createReadStream(path.join("/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/img/CYX.jpg")));
 		form.append("mode", "oneface");
 	    // form = r.form();
 	    // form.append("img", data);
@@ -402,7 +485,7 @@ router.get('/detect', function(req, res) {
 	        if (err) {
 	            throw new Error('send request error %s', err);
 	        }
-	        console.log(res.body);
+	        console.log(res)
 	    }
 
 
@@ -450,6 +533,28 @@ router.get('/addFaceToPerson', function(req, res) {
 	
     
 });
+
+router.post('/createFaceset', function(req, res) {
+	var facesetParams = {
+		faceset_name : req.body["name"],
+	};
+	facePP.faceset.create(facesetParams, function (err, facesetRes) {
+		res.send(facesetRes)
+		res.end()
+	});
+
+});
+
+// router.post('/addFaceToFaceset', function(req, res) {
+// 	var facesetParams = {
+// 		faceset_name : req.body["faceset_name"],
+// 		face_id : req.body["face_id"],
+// 	}
+// 	facePP.faceset.add_face(facesetParams, function (err, facesetRes) {
+// 		res.send(facesetRes)
+// 	});
+// });
+
 
 router.get('/getGroupInfo', function(req, res) {
 	var groupParams = {
