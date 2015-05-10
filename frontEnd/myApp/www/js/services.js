@@ -71,9 +71,10 @@ angular.module('starter.services', [])
       chats.splice(chats.indexOf(chat), 1);
     },
     get: function(chatId) {
-      if (i < chats.size())
-      return chats[i];
-    else return null;
+      
+      // if (chatId < chats.size())
+      // return chats[chatId];
+    // else return null;
     }
   };
 })

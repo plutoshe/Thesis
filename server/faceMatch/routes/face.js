@@ -10,6 +10,8 @@ var faceModel = models.face;
 var db = models.db
 // var overallModel = models.overall;
 
+var prefix = "http://localhost:3000/Face/"
+
 router.post("/getRecentFace", function(req, res) {
 	console.log(req)
 	var q = faceModel.find().sort({'updateTime': 1}).limit(20);
@@ -28,8 +30,14 @@ router.post("/getRecentFace", function(req, res) {
   		  // res.write(JSON.stringify(results.map(function (msg){ return {msgId: msg.fileName}; })));
   		
   		// res.end();
-
+  		for (var i = 0; i < data.length; i++) {
+  			if (data[i]["gender"] == 0) 
+  				data[i]["face"] = prefix + "Female/" + data[i]["face"]
+  			else 
+  				data[i]["face"] = prefix + "Male/" + data[i]["face"]
+  		}
 	  		res.json({data:data});
+	  		// console.table(data)
 	  		console.log("send end!")
 	  		res.end();
 	     // `posts` will be of length 20
