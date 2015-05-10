@@ -1,6 +1,8 @@
+
+
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
+.factory('Chats', function($http, $q) {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -30,36 +32,48 @@ angular.module('starter.services', [])
   //   lastText: 'Look at my mukluks!',
   //   face: 'https://pbs.twimg.com/profile_images/491995398135767040/ie2Z_V6e.jpeg'
   // }];
+  
+  var chats = $q.defer();
 
-  $http.post('http://localhost:3000/getRecentFace', {msg:'hello word!'}).
-  success(function(data, status, headers, config) {
-    chats = data["data"];
-    console.log(chats);
+  $http({
+    method: 'POST',
+    url: 'http://localhost:3000/getRecentFace',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    transformRequest: function(obj) {
+        var str = [];
+        for(var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+    },
+    data: {username: "1"}
+  })
 
-    // this callback will be called asynchronously
-    // when the response is available
+
+  // $http.post(, {face : "1"}).
+  .success(function(data, status, headers, config) {
+    chats.resolve(data["data"])
+    console.table(chats)
+    console.log("success!!!")
+    
   }).
   error(function(data, status, headers, config) {
-    // called asynchronously if an error occurs
-    // or server returns response with an error status.
+    console.log("Error status : " + status);
+    
   });
 
 
 
   return {
     all: function() {
-      return chats;
+      return chats.promise;
     },
     remove: function(chat) {
       chats.splice(chats.indexOf(chat), 1);
     },
     get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
+      if (i < chats.size())
+      return chats[i];
+    else return null;
     }
   };
 })
@@ -141,3 +155,5 @@ angular.module('starter.services', [])
 //     md.update(this);
 //     return md.digest().toHex();
 // }
+
+

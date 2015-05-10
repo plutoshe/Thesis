@@ -11,11 +11,26 @@ var db = models.db
 // var overallModel = models.overall;
 
 router.post("/getRecentFace", function(req, res) {
+	console.log(req)
 	var q = faceModel.find().sort({'updateTime': 1}).limit(20);
+	 res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
 	q.exec(function(err, data) {
-			if (err) return console.error(err);
+		console.log("!!!!");
+		if (err) return console.error(err);
+		// var querystring = require("querystring");
+		// var result = querystring.escape(ob)
+		// console.table(ob)
+		// console.log(result)
+		var results = {1 : "3"}
+		 // res.writeHead(200, { 'Content-Type': 'text/plain' });
+  		  // res.write(JSON.stringify(results.map(function (msg){ return {msgId: msg.fileName}; })));
+  		
+  		// res.end();
 
-	  		res.send({ data : data});
+	  		res.json({data:data});
+	  		console.log("send end!")
 	  		res.end();
 	     // `posts` will be of length 20
 	});

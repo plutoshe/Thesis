@@ -8,7 +8,19 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatsCtrl', function($scope, $ionicPopover, Chats) {
-  $scope.chats = Chats.all();
+  // $scope.chats = Chats.all().then(function());
+  $scope.chats = [{content: 'Loading..'}];
+  Chats.all().then(
+    function(res){
+      $scope.chats = res;
+    },
+    function(err){
+      console.error(err);
+    }
+  );
+  console.log("Chat")
+  console.table($scope.chats)
+  console.log("Chat")
   $scope.remove = function(chat) {
     Chats.remove(chat);
   }
@@ -135,6 +147,11 @@ angular.module('starter.controllers', [])
 // })
 
 .controller('AccountCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile) {
+
+
+
+
+
 	window.addEventListener('filePluginIsReady', function(){ console.log('File plugin is ready');}, false);
 
 	document.addEventListener("deviceready", onDeviceReady, false);
