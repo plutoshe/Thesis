@@ -69,14 +69,25 @@ angular.module('starter.controllers', [])
 })
 .controller('DisplayCtrl', function($scope, $q, displayInput) {
 	// $scope.picCur = pic[0]["face"]
-	$scope.index = 0
 
-	$scope.picCur = displayInput.get($scope.index)
 
+	displayInput.all().then(function(res){
+		$scope.pic = res
+		$scope.picCur = res[0]["face_id"]
+		$scope.index = 0
+	}, function(err) {
+
+	})
+
+	
 	$scope.nextPhoto = function() {
+		console.log("!!!")
+		console.table($scope.pic)
+		console.table($scope.picCur)
+		console.log("!!!")
 		console.log("!!!! in nextPhoto")
 		$scope.index++	
-		$scope.picCur = displayInput.get($scope.index)
+		$scope.picCur = $scope.pic[$scope.index]["face_id"]
 		console.log($scope.picCur)
 		// $scope.$apply(); 
 		// console.log(picCur)
@@ -103,7 +114,19 @@ angular.module('starter.controllers', [])
 	   console.log(File);
 	}
 
+	// $scope.index = 0
+
+	// // $scope.picCur = displayInput.get($scope.index)
 	
+	// $scope.nextPhoto = function() {
+	// 	console.log("!!!! in nextPhoto")
+	// 	$scope.index++	
+
+	// 	$scope.picCur = $scope.pic[$scope.index]
+	// 	console.log($scope.picCur)
+	// 	// $scope.$apply(); 
+	// 	// console.log(picCur)
+	// }
 	
 	$scope.getPhoto = function() {
 		console.log("get photo")

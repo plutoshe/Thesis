@@ -76,23 +76,29 @@ angular.module('starter.services', [])
     }
   };
 })
-.factory('displayInput', function($http) {
-  var collection;
-
+.factory('displayInput', function($http, $q) {
+  var collection = $q.defer();
+  var firstone = $q.defer()
   var set = function(newObj) {
-     collection = newObj;
+     collection.resolve(newObj);
+     firstone.resolve(newObj[0]["first_id"])
   };
 
-  var get = function(id){
-      if (collection != undefined && id < collection.length)
-        return collection[id]["face_id"];
-      else 
-        return null
+  var all = function(){
+    return collection.promise;
+      // if (collection != undefined && id < collection.length)
+        
+      // else 
+      //   return null
   };
+  var first = function() {
+    return firstone.promise;
+  }
 
   return {
+    first : first,
     set : set,
-    get : get
+    all : all
   };
 })
 // .factory("$cipherFactory", function() {
