@@ -7,7 +7,7 @@ autoIncrement.initialize(connection);
 
 var faceSchema = new mongoose.Schema ({
         gender : String,
-        location : String,
+        name : String,
         content : String, 
         updateTime: { type: Date, default: Date.now },
         face : String,

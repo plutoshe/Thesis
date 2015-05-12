@@ -84,7 +84,7 @@ router.post('/detectImg', function(req, res) {
 
 
 
-function dealWithUpdatePhoto(imgPath, location, content, returnMatch, returnFunc) {
+function dealWithUpdatePhoto(imgPath, username, content, returnMatch, returnFunc) {
 	var gm = require('gm');
 		// var fs = require('fs');
 	var imageMagick = gm.subClass({ imageMagick : true });
@@ -137,7 +137,7 @@ function dealWithUpdatePhoto(imgPath, location, content, returnMatch, returnFunc
 		        		return err
 		        	}
 		        	console.log(res)
-		            var newFace = new faceModel({location : location, updateTime: new Date(), content : content, gender : gender, face : face_id});
+		            var newFace = new faceModel({name : username, updateTime: new Date(), content : content, gender : gender, face : face_id});
 					newFace.save(function(res) {
 						console.log(res)
 					});

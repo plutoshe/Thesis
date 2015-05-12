@@ -15,8 +15,8 @@ var prefix = "http://localhost:3000/Face/"
 router.post("/getRecentFace", function(req, res) {
 	console.log(req)
 	var q = faceModel.find().sort({'_id': -1}).limit(20);
-	 res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
 	q.exec(function(err, data) {
 		console.log("!!!!");
@@ -55,7 +55,7 @@ router.post("/getRecentFace", function(req, res) {
 
 
 router.post('/newface', function(req, res) {
-	var newFace = new faceModel({location : req.body.location, updateTime: new Date(), content : req.body.content, gender : req.body.gender, face : req.body.face});
+	var newFace = new faceModel({name : req.body.name, updateTime: new Date(), content : req.body.content, gender : req.body.gender, face : req.body.face});
 	newFace.save();
 	res.end();
 });
