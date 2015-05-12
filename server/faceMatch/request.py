@@ -19,13 +19,21 @@ from bs4 import BeautifulSoup
 # print f.read()
 
 # params = urllib.urlencode({'path' : "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/images/LDH copy 7.jpg"})
-tt = 15007187
-wd = 1904
+tt = 15009732
+wd = 2700
 while tt < 15020000 : 
 	tem = "%d" %tt
+	tt=tt+1
 	print tem
-	f = urllib2.urlopen("http://www.jiayuan.com/" + tem, timeout=5)
+	# t
+	try:
+		f = urllib2.urlopen("http://www.jiayuan.com/" + tem, timeout=5)
+	except IOError:
+		tt=tt-1
+		continue
+
 	# f = urllib2.urlopen("http://www.jiayuan.com/24398315", timeout=5)
+
 	# f = http://www.jiayuan.com/24498319
 	# print f.read()
 
@@ -44,8 +52,10 @@ while tt < 15020000 :
 	# print pic
 	if len(pic) > 1: 
 		ans0 = pic[1].a.img["_src"]
-	elif (len(pic) > 0) and (pic[0].a.img != "http://images1.jyimg.com/w4/profile/i/photo_invite_f_bp.jpg") and (pic[0].a.img != "http://images1.jyimg.com/w4/profile/i/photo_invite_m_bp.jpg"):
+	elif (len(pic) > 0) and (pic[0].a.img["_src"] != "http://images1.jyimg.com/w4/profile/i/photo_invite_f_bp.jpg") and (pic[0].a.img["_src"] != "http://images1.jyimg.com/w4/profile/i/photo_invite_m_bp.jpg"):
 		ans0 = pic[0].a.img["_src"]
+	if (ans0 == "http://images1.jyimg.com/w4/profile/i/photo_invite_m_bp.jpg") or (ans0 == "http://images1.jyimg.com/w4/profile/i/photo_invite_f_bp.jpg"):
+		ans0 = ""
 	ans1 = ""
 	ans2 = ""
 	if ans0 != "" :
@@ -63,7 +73,7 @@ while tt < 15020000 :
 		ans2 = ans2[0:len(ans2) - len(t)]
 		wd = wd + 1
 		ss = "%d" %wd
-		# print "!" + ss
+		print "!" + ss
 		file = open("detectface/"+ss+".txt", "wb")
 		# print ans0
 		# print ans1

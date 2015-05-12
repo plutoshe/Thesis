@@ -72,6 +72,7 @@ angular.module('starter.controllers', [])
 
 
 	displayInput.all().then(function(res){
+		console.log("!!!")
 		$scope.pic = res
 		$scope.picCur = res[0]["face_id"]
 		$scope.index = 0

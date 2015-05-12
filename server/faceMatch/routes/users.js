@@ -75,7 +75,29 @@ var outputPrefix = "http://localhost:3000/Face/"
 router.post('/detectImg', function(req, res) {
 	res.header("Access-Control-Allow-Origin", "*");
   	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  
+  	var http = require('http')
+  , fs = require('fs')
+
+	// http://images1.jyimg.com/w4/global/i/yzphykj_m_bp.jpg
+	// http://images1.jyimg.com/w4/global/i/yzphykj_f_bp.jpg
+	var request = http.get('http://images1.jyimg.com/w4/global/i/zchykj_f_bp.jpg', function(res){
+	    var imagedata = ''
+	    res.setEncoding('binary')
+
+	    res.on('data', function(chunk){
+	        imagedata += chunk
+	    })
+
+	    res.on('end', function(){
+	        fs.writeFile('logo.jpg', imagedata, 'binary', function(err){
+	            if (err) throw err
+	            console.log('File saved.')
+	        })
+	    })
+
+	})
+
+	
 	dealWithUpdatePhoto(req.body["path"], "", "", true, function(data) {
 		res.send(data);
 		res.end()
