@@ -19,8 +19,8 @@ from bs4 import BeautifulSoup
 # print f.read()
 
 # params = urllib.urlencode({'path' : "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/images/LDH copy 7.jpg"})
-tt = 15009732
-wd = 2700
+tt = 15000014
+wd = 0
 while tt < 15020000 : 
 	tem = "%d" %tt
 	tt=tt+1
@@ -54,8 +54,11 @@ while tt < 15020000 :
 		ans0 = pic[1].a.img["_src"]
 	elif (len(pic) > 0) and (pic[0].a.img["_src"] != "http://images1.jyimg.com/w4/profile/i/photo_invite_f_bp.jpg") and (pic[0].a.img["_src"] != "http://images1.jyimg.com/w4/profile/i/photo_invite_m_bp.jpg"):
 		ans0 = pic[0].a.img["_src"]
-	if (ans0 == "http://images1.jyimg.com/w4/profile/i/photo_invite_m_bp.jpg") or (ans0 == "http://images1.jyimg.com/w4/profile/i/photo_invite_f_bp.jpg"):
+	if (ans0 == "http://images1.jyimg.com/w4/global/i/yzphykj_m_bp.jpg") or (ans0 == "http://images1.jyimg.com/w4/global/i/yzphykj_f_bp.jpg"):
 		ans0 = ""
+	if (ans0 == "http://images1.jyimg.com/w4/global/i/zchykj_f_bp.jpg") or (ans0 == "http://images1.jyimg.com/w4/global/i/zchykj_m_bp.jpg")	:
+		ans0 = ""
+		
 	ans1 = ""
 	ans2 = ""
 	if ans0 != "" :
@@ -78,7 +81,7 @@ while tt < 15020000 :
 		# print ans0
 		# print ans1
 		# print ans2
-		file.write(ans0 + "$$" + ans1 + "$$" + ans2)
+		file.write("http://www.jiayuan.com/" + tem + "$$" + ans0 + "$$" + ans1 + "$$" + ans2)
 			# break
 # params = urllib.urlencode({})
 # f = urllib.urlopen("http://localhost:3000/getRecentFace", params)
