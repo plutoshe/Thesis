@@ -5,7 +5,7 @@ sys.setdefaultencoding( "utf-8" )
 import urllib2
 import urllib
 import json
-i = 1
+i = 3000
 while i <= 3000 :
 
 	i = i + 1
@@ -17,10 +17,16 @@ while i <= 3000 :
 
 	# f = urllib2.urlopen(w[0], timeout=5)
 	params = urllib.urlencode({'url' : w[0], 'path' : w[1], 'content' : w[2], 'username' : w[3]})
-	# f = urllib.urlopen("http://localhost:3000/detectImg", params)
-	f = urllib.urlopen("http://182.92.243.187:3000/detectImg", params)
+	try:
+		# f = urllib.urlopen("http://localhost:3000/detectImg", params)
+		f = urllib.urlopen("http://182.92.243.187:3000/detectImg", params)
+		print f.read()
+	except IOError:
+		i=i-1
+		continue
+	
 	# 182.92.243.187
-	print f.read()
+	
 
 
 
