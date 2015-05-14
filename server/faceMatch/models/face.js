@@ -9,6 +9,7 @@ var faceSchema = new mongoose.Schema ({
         gender : String,
         name : String,
         content : String, 
+        url : String,
         updateTime: { type: Date, default: Date.now },
         face : String,
 });

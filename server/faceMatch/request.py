@@ -19,8 +19,8 @@ from bs4 import BeautifulSoup
 # print f.read()
 
 # params = urllib.urlencode({'path' : "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/images/LDH copy 7.jpg"})
-tt = 15000014
-wd = 0
+tt = 15020000
+wd = 3000
 while tt < 15020000 : 
 	tem = "%d" %tt
 	tt=tt+1

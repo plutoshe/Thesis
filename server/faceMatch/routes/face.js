@@ -55,7 +55,14 @@ router.post("/getRecentFace", function(req, res) {
 
 
 router.post('/newface', function(req, res) {
-	var newFace = new faceModel({name : req.body.name, updateTime: new Date(), content : req.body.content, gender : req.body.gender, face : req.body.face});
+	var newFace = new faceModel({
+		name : req.body.name, 
+		updateTime: new Date(), 
+		content : req.body.content, 
+		gender : req.body.gender, 
+		face : req.body.face, 
+		url : req.body.url
+	});
 	newFace.save();
 	res.end();
 });

@@ -60,27 +60,35 @@ router.get("/test", function(req, res) {
 	
 });
 
+// var facesetGroup = {
+// 	"Male" : "ccea67ddc63e88c8c2c1191b6b31e9ff",
+// 	"Female" : "4ad51ce5bc969f6acc01a1b9a0d56ddd",
+// }
+
 var facesetGroup = {
-	"Male" : "ccea67ddc63e88c8c2c1191b6b31e9ff",
-	"Female" : "4ad51ce5bc969f6acc01a1b9a0d56ddd",
+	"Male" : "c67f8b7e5c12bfbdc38d564ab953f021",
+	"Female" : "c4c6b84eeeed89f27dab329bfbce8d1b"
 }
+
 var contrast = {
 	"Male" : "Female",
 	"Female" : "Male"
 }
-var storePathPrefix = "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/public/Face/"
+var path = require("path")
+var storePathPrefix = path.resolve("./public/Face") + "/"
 var outputPrefix = "http://localhost:3000/Face/"
+var xuhao = 0
 
 
-router.post('/detectImg', function(req, res) {
-	res.header("Access-Control-Allow-Origin", "*");
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  	var http = require('http')
-  , fs = require('fs')
+router.post('/detectImg', function(req, response) {
+	response.header("Access-Control-Allow-Origin", "*");
+  	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  	var http = require('http'), fs = require('fs')
 
 	// http://images1.jyimg.com/w4/global/i/yzphykj_m_bp.jpg
 	// http://images1.jyimg.com/w4/global/i/yzphykj_f_bp.jpg
-	var request = http.get('http://images1.jyimg.com/w4/global/i/zchykj_f_bp.jpg', function(res){
+	xuhao++
+	var request = http.get(req.body.path, function(res){
 	    var imagedata = ''
 	    res.setEncoding('binary')
 
@@ -89,24 +97,26 @@ router.post('/detectImg', function(req, res) {
 	    })
 
 	    res.on('end', function(){
-	        fs.writeFile('logo.jpg', imagedata, 'binary', function(err){
+	        fs.writeFile(path.resolve("./logo.jpg"), imagedata, 'binary', function(err){
 	            if (err) throw err
 	            console.log('File saved.')
+		        dealWithUpdatePhoto(path.resolve("./logo.jpg"), req.body.username, req.body.content, req.body.url, false, function(data) {
+					response.send(data);
+					response.end()
+				})
 	        })
+
 	    })
 
 	})
 
 	
-	dealWithUpdatePhoto(req.body["path"], "", "", true, function(data) {
-		res.send(data);
-		res.end()
-	})
+	
 })
 
 
 
-function dealWithUpdatePhoto(imgPath, username, content, returnMatch, returnFunc) {
+function dealWithUpdatePhoto(imgPath, username, content, user_url, returnMatch, returnFunc) {
 	var gm = require('gm');
 		// var fs = require('fs');
 	var imageMagick = gm.subClass({ imageMagick : true });
@@ -135,14 +145,17 @@ function dealWithUpdatePhoto(imgPath, username, content, returnMatch, returnFunc
 	        result = JSON.parse(res.body)
 	        console.log(result);
 	        if (result["face"].length == 0) {
+	        	returnFunc("No face")
 	        	return
 	        }
 	        var gender = result["face"][0]["attribute"]["gender"]["value"]
 	        var face_id = result["face"][0]["face_id"]
 	        console.log("rename")
+	        console.log(dstPath)
 	        console.log(storePathPrefix + gender + "/" + face_id + ".jpg")
 			fs.rename(dstPath, storePathPrefix + gender + "/" + face_id + ".jpg", function(err) {
 	            if (err) {
+	            	returnFunc(err)
 	            	return ""
 	                // fs.unlink("tmp/test.jpg");
 	                // fs.rename(files.image.path, "tmp/test.jpg");
@@ -159,7 +172,14 @@ function dealWithUpdatePhoto(imgPath, username, content, returnMatch, returnFunc
 		        		return err
 		        	}
 		        	console.log(res)
-		            var newFace = new faceModel({name : username, updateTime: new Date(), content : content, gender : gender, face : face_id});
+		            var newFace = new faceModel({
+		            	name : username, 
+		            	updateTime: new Date(), 
+		            	content : content, 
+		            	gender : gender, 
+		            	face : face_id,
+		            	url : user_url,
+		            });
 					newFace.save(function(res) {
 						console.log(res)
 					});
@@ -207,7 +227,7 @@ router.get("/faceset/get_info", function(req, res) {
 
 
 router.post('/getImage', function(request, res) {
-res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
 	console.log("Request handler 'upload' was called.");
@@ -682,4 +702,4 @@ router.get('/removePersonFromGroup', function(req, res) {
 	});
 });
 
-module.exports = router;
+module.exports = router
