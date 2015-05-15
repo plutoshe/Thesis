@@ -10,7 +10,7 @@
 // r fb = new Firebase("https://INSTANCE_ID_HERE.firebaseio.com/");
 
 
-angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 'ngCordova'])
+angular.module('starter', ['ionic',  'starter.controllers', 'ui.router', 'starter.services', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -53,19 +53,16 @@ angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 
     }
   })
 
-  .state('tab.takephoto', {
-    url : '/chats/takephoto',
-    views : {
-      'tab-chats' : {
-        templateUrl : "templates/takephoto.html",
-        controller : "TakephotoCtrl"
-      }
-    }
+  .state('takephoto', {
+    url : '/takephoto',  
+    templateUrl : "templates/takephoto.html",
+    controller : "TakephotoCtrl"
+  
   })
   .state('tab.display', {
-    url : '/chats/display',
+    url : '/display',
     views : {
-      'tab-chats' : {
+      'display' : {
         templateUrl : "templates/display.html",
         controller : "DisplayCtrl"
       }
@@ -110,6 +107,6 @@ angular.module('starter', ['ionic',  'starter.controllers', 'starter.services', 
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/tab/chats');
 
 });

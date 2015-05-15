@@ -1,8 +1,16 @@
 <ion-view view-title="Chats">
 
     <ion-nav-buttons side="right">
-    <button class="button icon ion-plus-round" ng-click="popover.show($event)">
-    </button>
+    <!-- <button class="button icon ion-plus-round" ng-click="popover.show($event)">
+    </button> -->
+    <!-- <a  href='#/tab/display'> -->
+      <!-- <a href='#/tab/takephoto'> -->
+      <a ui-sref="takephoto">
+      <button class="button button-icon icon ion-ios-camera"  >  
+      </button>
+      </a>
+      <!-- </a> -->
+    <!-- </a> -->
     </ion-nav-buttons>
 
     <ion-content>
@@ -17,24 +25,23 @@
               <h2>{{chat.location}}</h2>
               <p>{{chat.location}}</p>
               <i class="icon ion-chevron-right icon-accessory"></i>
-            <div class="col">
+              <div class="col"></div>
+            </div>
           </div>
-        </div>
-        </div>
-        <div class="item tabs tabs-secondary tabs-icon-left">
-    <a class="tab-item" href="#">
-      <i class="icon ion-thumbsup"></i>
-      Like
-    </a>
-    <a class="tab-item" href="#">
-      <i class="icon ion-chatbox"></i>
-      Comment
-    </a>
-    <a class="tab-item" href="#">
-      <i class="icon ion-share"></i>
-      Share
-    </a>
-  </div>
+          <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" href="#">
+              <i class="icon ion-thumbsup"></i>
+              Like
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-chatbox"></i>
+              Comment
+            </a>
+            <a class="tab-item" href="#">
+              <i class="icon ion-share"></i>
+              Share
+            </a>
+          </div>
 
         </div>
 

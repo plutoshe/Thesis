@@ -7,7 +7,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatsCtrl', function($scope, $ionicPopover, Chats) {
+.controller('ChatsCtrl', function($scope, $ionicPopover, $state,  $stateParams, Chats) {
   // $scope.chats = Chats.all().then(function());
   $scope.chats = [];
   Chats.all().then(
@@ -26,6 +26,13 @@ angular.module('starter.controllers', [])
   $scope.remove = function(chat) {
     Chats.remove(chat);
   }
+
+  $scope.goto = function() {
+  	console.log("into goto!")
+  	 $state.go('tab.takephoto');
+  	 console.log("out goto!")
+  }
+
   var template = '<ion-popover-view><ion-header-bar> <h1 class="title">My Popover Title</h1> </ion-header-bar> <ion-content> Hello! </ion-content></ion-popover-view>';
 
 	$scope.popover = $ionicPopover.fromTemplate(template, {
@@ -82,11 +89,8 @@ angular.module('starter.controllers', [])
 
 	
 	$scope.nextPhoto = function() {
-		console.log("!!!")
 		console.table($scope.pic)
 		console.table($scope.picCur)
-		console.log("!!!")
-		console.log("!!!! in nextPhoto")
 		$scope.index++	
 		$scope.picCur = $scope.pic[$scope.index]["face_id"]
 		console.log($scope.picCur)

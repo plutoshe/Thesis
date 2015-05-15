@@ -34,19 +34,45 @@
 </ion-view>
  -->
 
-<ion-view  view-title="takephoto" name = "takephoto">
+<!--  <ion-tab title="Account" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/tab/account">
+    <ion-nav-view name="tab-account"></ion-nav-view>
+  </ion-tab>
+
+ -->
+
+<ion-nav-view name="takephoto">
+<ion-view view-title="takephoto">
 <ion-nav-bar>
   <ion-nav-back-button>
   </ion-nav-back-button>
 </ion-nav-bar>
 
   <ion-content>
-
-    <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
-    
-    <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-  <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
+  <!-- <p>111</p> -->
+    <div class="row">
+      <!-- <div class = "col"> -->
+      <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+      <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
+      <!-- </div> -->
+    </div>
+    <div class="row">
+    <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
+    </div>
+    <div class="row">
+      <div class = "col col-30">name</div>
+      <div class = "col"></div>
+    </div>
+    <div class="row">
+      <div class = "col col-30">content</div>
+      <div class = "col"></div>
+    </div>
+    <div class="row">
+      <div class = "col col-30">url</div>
+      <div class = "col"></div>
+    </div>
+  
     <a href='#/tab/chats/display'><button class="button button-energized" ng-click="tranferFile()" >Transfer</button></a>
   </ion-content>
 </ion-view>
+</ion-nav-view>
 
