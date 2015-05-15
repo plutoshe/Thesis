@@ -103,6 +103,11 @@ angular.module('starter.controllers', [])
 .controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile, displayInput) {
 	var index;
 	var pic;
+	$scope.user = {
+		name : "",
+		url : "",
+		content : ""
+	}
 	window.addEventListener('filePluginIsReady', function(){ console.log('File plugin is ready');}, false);
 	document.addEventListener("deviceready", onDeviceReady, false);
 	function onDeviceReady() {
@@ -132,7 +137,11 @@ angular.module('starter.controllers', [])
 	// 	// $scope.$apply(); 
 	// 	// console.log(picCur)
 	// }
-	
+	$scope.checkInput = function() {
+		console.log($scope.user.name)
+		console.log($scope.user.url)
+		console.log($scope.user.content)
+	}
 	$scope.getPhoto = function() {
 		console.log("get photo")
 		options = {

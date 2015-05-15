@@ -53,20 +53,28 @@ angular.module('starter', ['ionic',  'starter.controllers', 'ui.router', 'starte
     }
   })
 
-  .state('takephoto', {
+  .state('tab.takephoto', {
     url : '/takephoto',  
-    templateUrl : "templates/takephoto.html",
-    controller : "TakephotoCtrl"
+    views: {
+      'tab-chats': {
+    
+          templateUrl : "templates/takephoto.html",
+          controller : "TakephotoCtrl"
+        }
+    }
   
   })
   .state('tab.display', {
     url : '/display',
-    views : {
-      'display' : {
+    views: {
+      'tab-chats': {
+    
         templateUrl : "templates/display.html",
         controller : "DisplayCtrl"
-      }
+        }
     }
+    
+    
   })
   .state('tab.chats', {
       url: '/chats',

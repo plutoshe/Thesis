@@ -40,8 +40,9 @@
 
  -->
 
-<ion-nav-view name="takephoto">
-<ion-view view-title="takephoto">
+
+<ion-nav-view></ion-nav-view>
+<ion-view class = "padding" view-title="takephoto" name="tab.takephoto">
 <ion-nav-bar>
   <ion-nav-back-button>
   </ion-nav-back-button>
@@ -58,21 +59,36 @@
     <div class="row">
     <button class="button button-energized" ng-click="getPhoto()">Take Picture</button>
     </div>
-    <div class="row">
-      <div class = "col col-30">name</div>
-      <div class = "col"></div>
+    <!-- <br/> -->
+
+    <div class="list">
+      <label class="item item-input">
+        <!-- <span class="input-label">姓名</span> -->
+        <input type="text" placeholder="姓名" ng-model='user.name'>
+      </label>
+      <!-- <div class = "col col-30">name</div>
+      <div class = "col"></div> -->
+    
+    
+      <label class="item item-input">
+        <!-- <span class="input-label">个人主页</span> -->
+        <input type="text" placeholder="个人主页" ng-model='user.url'>
+      </label>
+      <!-- <div class = "col col-30">content</div>
+      <div class = "col"></div> -->
+      <label class="item item-input">
+        <!-- <span class="input-label">个人简介</span>  -->
+        <textarea rows="5" placeholder="个人简介" ng-model='user.content'>
+
+        </textarea>
+        <!-- <input type="text" placehoder="个人简介">  -->
+      </label>
+      <!-- <div class = "col col-30">url</div>
+      <div class = "col"></div> -->
     </div>
-    <div class="row">
-      <div class = "col col-30">content</div>
-      <div class = "col"></div>
-    </div>
-    <div class="row">
-      <div class = "col col-30">url</div>
-      <div class = "col"></div>
-    </div>
-  
-    <a href='#/tab/chats/display'><button class="button button-energized" ng-click="tranferFile()" >Transfer</button></a>
+    <button class="button" ng-click="checkInput()">check</button>
+    <a ui-sref='tab.display'><button class="button button-energized" ng-click="tranferFile()" >提交查看结果</button></a>
   </ion-content>
 </ion-view>
-</ion-nav-view>
+
 
