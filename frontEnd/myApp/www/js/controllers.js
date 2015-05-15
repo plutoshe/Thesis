@@ -186,28 +186,40 @@ angular.module('starter.controllers', [])
 		console.log("tranfer file")
 		var fd = new FormData();
 		fd.append('image', $scope.lastPhoto);
-		var req = {
-			method : "POST",
-			url : "http://127.0.0.1:3000/",
-			port : 3000,
-			path : '/getImage',
-			headers:{'Content-Type':"image/jpeg"
-	        },
-	        data : { 
-	        	image : fd
-	        },
+		fd.append('name',$scope.user.name);
+		fd.append('url',$scope.user.url);
+		fd.append('content',$scope.user.content);
+		// var req = {
+		// 	method : "POST",
+		// 	url : "http://127.0.0.1:3000/",
+		// 	port : 3000,
+		// 	path : '/getImage',
+		// 	headers:{'Content-Type':"undefined"
+	 //        },
+	 //        data : { 
+	 //        	image : fd,
+	 //        	name : $scope.user.name,
+	 //        	url : $scope.user.url,
+	 //        	content : $scope.user.content
+	 //        },
 
-		}
+		// }
 		var upload_url = "http://127.0.0.1:3000/getImage"
 	    $http.post(upload_url, fd, {
 	        transformRequest:angular.identity,
 	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
 	    }).success(function(data, status, headers){
-	    	console.log("success!")
+	    	// $http.post("http://127.0.0.1:3000/uploadImage", fd, {
+		    //     transformRequest:angular.identity,
+		    //     headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
+	    	// }).success(function(data, status, headers){
+	    	// 	console.log("success!")
+	    	// })
+	    	displayInput.set(data["candidate"])
 	    	// $scope.index = 0;
 	    	// $scope.pic = data["candidate"];
 	    	// $scope.picCur = $scope.pic[0]["face_id"]
-	    	displayInput.set(data["candidate"])
+	    	
 	    	// console.log($scope.picCur)
 	    	// console.log(picCur)
 	    	// console.log(status)

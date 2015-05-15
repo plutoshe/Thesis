@@ -153,7 +153,7 @@ function processImg(face_id, gender, returnFunc) {
     } 
 }
 
-
+//找脸
 function detectFace(imgPath, returnFunc) {
 	var gm = require('gm');
 		// var fs = require('fs');
@@ -277,37 +277,22 @@ router.post('/getImage', function(request, res) {
 	console.log("Request handler 'upload' was called.");
     var form = new formidable.IncomingForm();
     form.parse(request, function(error, fields, files) {
-	 	//logs the file information 
-	        // console.log(JSON.stringify(files))
-  //       dealWithUpdatePhoto(files.image.path, "", "", true, function(data) {
-		// 	res.send(data);
-		// 	res.end()
-		// });
-	    detectFace(files.image.path, function(err, data) {
-	    	if (err != nil) {
-	    		res.send(err)
-				res.end()
-			}
+	    console.log(fields)
+	    console.log(files)
+	  //   detectFace(files.image.path, function(err, data) {
+	  //   	if (err != nil) {
+	  //   		res.send(err)
+			// 	res.end()
+			// }
 			
-	    	processImg(data.face_id, data.gender, function(data_match) {
-	    		res.send(data_match)
-	    		res.end()
+	  //   	processImg(data.face_id, data.gender, function(data_match) {
+	  //   		res.send(data_match)
+	  //   		res.end()
 
-	    	})
+	  //   	})
 	    	
-	    })
-        // fs.rename(files.image.path, "/Users/plutoshe/Desktop/Work/Thesis/server/faceMatch/test.jpg", function(err) {
-        //     if (err) {
-        //         fs.unlink("tmp/test.jpg");
-        //         fs.rename(files.image.path, "tmp/test.jpg");
-        //     }
-        // });
-
-        // res.push()
-        // response.writeHead(200, {"Content-Type": "text/html"});
-        // response.write("received image:<br/>");
-        // response.write("<img src='/show' />");
-        // res.end();
+	  //   })
+        
     });
 
 });
