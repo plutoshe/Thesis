@@ -100,7 +100,7 @@ router.post('/detectImg', function(req, response) {
 	        fs.writeFile(path.resolve("./logo.jpg"), imagedata, 'binary', function(err){
 	            if (err) throw err
 	            console.log('File saved.')
-		        detectFace(path.resolve("./logo.jpg"), function(data_face) {
+		        detectFace(path.resolve("./logo.jpg"), function(err, data_face) {
 
 					// response.send(data);
 					dealWithUpdatePhoto(
@@ -111,7 +111,7 @@ router.post('/detectImg', function(req, response) {
 						req.body.url,
 						function (data_upload) {
 							if (req.body.returnMatch) {
-								processImg(data_face.face_id, data_face.gender, function(data_match) {
+								processImg(data_face.face_id, data_face.gender, function(err, data_match) {
 									response.send(data_match)
 									response.end()
 								})		
@@ -128,32 +128,88 @@ router.post('/detectImg', function(req, response) {
 	})	
 })
 
-function processImg(face_id, gender, returnFunc) {
+
+router.post('/getPointedfaceInfo', function(req, res) {
+	faceModel.find({face_id : req.body.face_id}, function(err, data){
+		if (err) {
+			res.send(err)
+			res.end()
+		}
+		res.send(data)
+		res.end()
+	})
+});
+
+// getimage route:
+// apply a route to receive the request from a compare view
+router.post('/getImage', function(request, response) {
+	response.header("Access-Control-Allow-Origin", "*");
+	response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	console.log("Request handler 'upload' was called.");
+    var form = new formidable.IncomingForm();
+    form.parse(request, function(error, fields, files) {
+	    // console.log(fields)
+	    // console.log(files)
+	    detectFace(files.image.path, function(err, data_face) {
+			// response.send(data_face);
+			console.log("data_face : \n", data_face)
+			processImg(data_face.face_id, data_face.gender, function(err, data_match) {
+				console.log(data_match)
+				response.send(data_match)
+				response.end()
+			})	
+			console.log(fields)
+			if (fields.store == "true") {
+				console.log("into store")
+				dealWithUpdatePhoto(
+					data_face.face_id, 
+					data_face.gender,
+					fields.name, 
+					fields.content,
+					fields.url,
+					function (err) {
+					}
+				)
+			}
+		})
+    });
+
+});
+
+
+//processImg:
+// return the closet candidate face to invoker through the call-back function
+// return tyep : 
+function processImg(face_id, gender, callback) {
 	var MatchGender = gender;
-    if (returnMatch) {
-    	console.log("match")
-        var facesetParam = {
-        	faceset_id : facesetGroup[MatchGender],
-        	key_face_id : face_id,
-        	count : 3
-        }
-        facePP.recognition.search(facesetParam, function(err, recognitionRes) {
-        	console.log(recognitionRes)
-        	if (recognitionRes["candidate"] != undefined) {
-        		for (var i = 0; i < recognitionRes["candidate"].length; i++)
-        			recognitionRes["candidate"][i]["face_id"] = outputPrefix + MatchGender + "/" + recognitionRes["candidate"][i]["face_id"] + '.jpg'
-        	}
-        	console.log(recognitionRes)
-        	returnFunc(recognitionRes)
-			return recognitionRes
-		});
-    } else {
-    	returnFunc("")
-    	return "";
-    } 
+
+	console.log(face_id, gender)
+	console.log("match")
+    var facesetParam = {
+    	faceset_id : facesetGroup[MatchGender],
+    	key_face_id : face_id,
+    	count : 10
+    }
+    facePP.recognition.search(facesetParam, function(err, recognitionRes) {
+    	if (err) {
+    		callback(err, recognitionRes)
+    		return
+    	}
+    	console.log(recognitionRes)
+    	if (recognitionRes["candidate"] != undefined) {
+    		for (var i = 0; i < recognitionRes["candidate"].length; i++)
+    			recognitionRes["candidate"][i]["face_id"] = outputPrefix + MatchGender + "/" + recognitionRes["candidate"][i]["face_id"] + '.jpg'
+    	}
+    	console.log(recognitionRes)
+    	callback(err, recognitionRes)
+		return recognitionRes
+	});
+    
 }
 
-//找脸
+//detectFace 
+// find the face of provided image
+// return type : {"imagePath" : string, "face_id" : string, "gender" : string}
 function detectFace(imgPath, returnFunc) {
 	var gm = require('gm');
 		// var fs = require('fs');
@@ -173,14 +229,14 @@ function detectFace(imgPath, returnFunc) {
 		form.append("mode", "oneface");
 		function requestCallback(err, res) {
 	        if (err) {
-	        	returnFunc(err, nil);
+	        	returnFunc(err, undefined);
 	            return err;
 	        }
 	        
 	        result = JSON.parse(res.body)
 	        console.log(result);
 	        if (result.error != undefined) {
-	        	returnFunc(result, nil)
+	        	returnFunc(result, undefined)
 	        	return result
 	        }
 	        if (result["face"].length == 0) {
@@ -194,12 +250,12 @@ function detectFace(imgPath, returnFunc) {
 	        console.log(storePathPrefix + gender + "/" + face_id + ".jpg")
 			fs.rename(dstPath, storePathPrefix + gender + "/" + face_id + ".jpg", function(err) {
 	            if (err) {
-	            	returnFunc(err, nil)
+	            	returnFunc(err, undefined)
 	            	return 
 	                // fs.unlink("tmp/test.jpg");
 	                // fs.rename(files.image.path, "tmp/test.jpg");
 	            }
-	            returnFunc(nil, {"imagePath" : storePathPrefix + gender + "/" + face_id + ".jpg", "face_id" : face_id, "gender" : gender})
+	            returnFunc(undefined, {"imagePath" : storePathPrefix + gender + "/" + face_id + ".jpg", "face_id" : face_id, "gender" : gender})
 	            return 
 	        })
 	    }
@@ -208,8 +264,9 @@ function detectFace(imgPath, returnFunc) {
 	    
 }
 
-
-function dealWithUpdatePhoto(face_id, gender, username, content, user_url, returnFunc) {
+// dealWithUpdatePhoto
+// add face to faceset, store the face info to mongodb
+function dealWithUpdatePhoto(face_id, gender, username, content, user_url, callback) {
     console.log("new Face db")
     var facesetParams = {
     	faceset_id : facesetGroup[gender],
@@ -218,8 +275,8 @@ function dealWithUpdatePhoto(face_id, gender, username, content, user_url, retur
     }
     facePP.faceset.add_face(facesetParams, function(err, res) {
     	if (err) {
-    		returnFunc(err)
-    		return err
+    		callback(err)
+    		return 
     	}
     	console.log(res)
         var newFace = new faceModel({
@@ -233,7 +290,7 @@ function dealWithUpdatePhoto(face_id, gender, username, content, user_url, retur
 		newFace.save(function(res) {
 			console.log(res)
 		});
-		returnFunc(nil)
+		callback()
 		//console.log(newFace)
 		 
 	})
@@ -262,7 +319,7 @@ router.post('/createPost', function(req, res) {
   		req.body.content,
   		req.body.user_url,
   		function (err) {
-  			if (err != nil) {
+  			if (err) {
   				res.send(err)
   			}
   			res.end()
@@ -270,32 +327,6 @@ router.post('/createPost', function(req, res) {
   	)
 })
 
-router.post('/getImage', function(request, res) {
-	res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  
-	console.log("Request handler 'upload' was called.");
-    var form = new formidable.IncomingForm();
-    form.parse(request, function(error, fields, files) {
-	    console.log(fields)
-	    console.log(files)
-	  //   detectFace(files.image.path, function(err, data) {
-	  //   	if (err != nil) {
-	  //   		res.send(err)
-			// 	res.end()
-			// }
-			
-	  //   	processImg(data.face_id, data.gender, function(data_match) {
-	  //   		res.send(data_match)
-	  //   		res.end()
-
-	  //   	})
-	    	
-	  //   })
-        
-    });
-
-});
 
 router.post('/refresh', multipartMiddleware, function(req, res) {
 	// var detectParams = {

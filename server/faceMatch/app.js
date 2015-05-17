@@ -38,6 +38,8 @@ app.post('/refresh', users);
 app.post('/addFaceToPersonbypost', users);
 app.post('/addFaceToPersonbypostandurl', users);
 app.post('/getImage', users);
+app.post('/getPointedfaceInfo', users)
+
 
 app.get("/faceset/get_info", users)
 app.get('/train/search', users)
