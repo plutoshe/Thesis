@@ -43,25 +43,6 @@ router.get("/train/search", function(req, res) {
 	res.end()
 });
 
-router.post("/info/get_session", function(req, res) {
-	console.log("into get session router")
-	var infoParams = {
-		session_id : req.body.session_id
-	}
-	console.log(infoParams)
-	facePP.info.get_session(infoParams, function(err, infoRes) {
-		console.log("!!!!")
-		if (err) {
-			console.log(err)
-			res.send(err)
-			res.end()
-			return
-		}
-		console.log(infoRes)
-		res.send(infoRes)
-		res.end()
-	})
-})
 
 function trainSearch(faceset_id) {
 	// console.log
@@ -150,16 +131,7 @@ router.post('/detectImg', function(req, response) {
 })
 
 
-router.post('/getPointedfaceInfo', function(req, res) {
-	faceModel.find({face_id : req.body.face_id}, function(err, data){
-		if (err) {
-			res.send(err)
-			res.end()
-		}
-		res.send(data)
-		res.end()
-	})
-});
+
 
 // getimage route:
 // apply a route to receive the request from a compare view
@@ -220,7 +192,7 @@ function processImg(face_id, gender, callback) {
     	console.log(recognitionRes)
     	if (recognitionRes["candidate"] != undefined) {
     		for (var i = 0; i < recognitionRes["candidate"].length; i++)
-    			recognitionRes["candidate"][i]["face_id"] = outputPrefix + MatchGender + "/" + recognitionRes["candidate"][i]["face_id"] + '.jpg'
+    			recognitionRes["candidate"][i]["new_face_id"] = outputPrefix + MatchGender + "/" + recognitionRes["candidate"][i]["face_id"] + '.jpg'
     	}
     	console.log(recognitionRes)
     	callback(err, recognitionRes)
@@ -715,24 +687,21 @@ router.get('/getGroupInfo', function(req, res) {
 	});
 });
 
-router.post('/getPersonInfo', function(req, res) {
-	var personParams = {
-		person_id : req.body["person_id"]
-	};
-	facePP.person.get_info(personParams, function(err, personRes) {
-		res.send(personRes);
-		res.end()
-	});
-});
 
 router.post('/createPerson', function(req, res) {
-	var personParams = {
-		person_name : req.body["name"]
-	};
-	facePP.person.create(personParams, function (err, personRes) {
-		res.send(personRes)
-	});
-
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    console.log(req)
+  	console.log("into get face info")
+	faceModel.find({face : req.body.face}, function(err, data){
+		if (err) {
+			res.send(err)
+			res.end()
+		}
+		console.log(data)
+		res.send(data)
+		res.end()
+	})
 });
 
 router.get('/addPersonToGroup', function(req,res) {
@@ -787,13 +756,5 @@ router.get('/deletePerson', function(req, res) {
 	});
 });
 
-router.get('/removePersonFromGroup', function(req, res) {
-	var personParams = {
-		person_name : ""
-	};
-	facePP.person.delete(personParams, function(err, personRes) {
-		res.send(personRes);
-	});
-});
 
 module.exports = router

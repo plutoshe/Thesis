@@ -1,0 +1,16 @@
+<ion-view view-title="display" name = "display">
+<!-- <ion-view class="has-header padding" view-title="display" name = "display"> -->
+<ion-nav-bar>
+  <ion-nav-back-button>
+  </ion-nav-back-button>
+</ion-nav-bar>
+
+  <ion-content>
+    <img ng-show="picCur !== undefined" width = "300" height = "300" ng-src="{{picCur}}">   
+    <img ng-show="picCur === undefined" ng-src="http://placehold.it/300x300"> 
+    <br>
+    <button class="button button-energized" ng-click="interest()">感兴趣</button>
+    <button class="button button-energized" ng-click="nextPhoto()">下一个</button>
+  </ion-content>
+</ion-view>
+

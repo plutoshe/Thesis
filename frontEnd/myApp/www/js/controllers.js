@@ -1,4 +1,5 @@
 var serverPrefix = "182.92.243.187:3000"
+
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $ionicPopover) {
@@ -8,7 +9,12 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatsCtrl', function($scope, $ionicPopover, $state,  $stateParams, Chats) {
+.controller('ChatsCtrl', function($scope, $ionicPopover, $state,  $stateParams, Chats, chatDetailService) {
+  $scope.gotoDetail = function (chatID) {
+  	console.log(chatID)
+  	chatDetailService.set(chatID)
+  	$state.go("tab.chat-detail")
+  }
   // $scope.chats = Chats.all().then(function());
   $scope.chats = [];
   Chats.all().then(
@@ -68,22 +74,37 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+.controller('ChatDetailCtrl', function($scope, $stateParams, chatDetailService) {
 	
-	$scope.chat = Chats.get($stateParams.chatId);
+	chatDetailService.source().then(function(res) {
+		console.log(res)
+		
+		$scope.src = res
+	});
+	chatDetailService.chatDetail().then(function(res) {
+		$scope.chat = res
+	})
 	$scope.toggle = function() {
 	        
 	}			
 })
-.controller('DisplayCtrl', function($scope, $q, displayInput) {
+.controller('DisplayCtrl', function($scope, $q, displayInput, $state, chatDetailService) {
 	// $scope.picCur = pic[0]["face"]
-
+	// $state.go($state.current, {}, {reload: true});
+	console.log("in display")
+	$scope.interest = function () {
+		if ($scope.pic && $scope.index < $scope.pic.length) {
+			console.log($scope.pic[$scope.index]["face_id"])
+			chatDetailService.set($scope.pic[$scope.index]["face_id"])
+			$state.go("tab.chat-detail")
+		}
+	}
 
 	displayInput.all().then(function(res){
 		console.table(res)
 		if (res) {
 			$scope.pic = res
-			$scope.picCur = res[0]["face_id"]
+			$scope.picCur = res[0]["new_face_id"]
 			$scope.index = 0
 		}
 	}, function(err) {
@@ -92,18 +113,21 @@ angular.module('starter.controllers', [])
 
 	
 	$scope.nextPhoto = function() {
-		console.table($scope.pic)
-		console.table($scope.picCur)
+		// console.table($scope.pic)
+		// console.table($scope.picCur)
 		$scope.index++	
-		$scope.picCur = $scope.pic[$scope.index]["face_id"]
+		if ($scope.pic && $scope.index < $scope.pic.length) {
+			$scope.picCur = $scope.pic[$scope.index]["new_face_id"]
+		} else {
+			console.log("!!!!")
+			$scope.picCur = undefined //"http://placehold.it/300x300"
+		}
 		console.log($scope.picCur)
-		// $scope.$apply(); 
-		// console.log(picCur)
 	}
 	
 })
 
-.controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $cordovaCamera, $cordovaFile, displayInput) {
+.controller('TakephotoCtrl', function($scope, $http, $cordovaFileTransfer, $state, $cordovaCamera, $cordovaFile, displayInput) {
 	var index;
 	var pic;
 	$scope.user = {
@@ -145,8 +169,15 @@ angular.module('starter.controllers', [])
 		console.log($scope.user.url)
 		console.log($scope.user.content)
 	}
-	$scope.getPhoto = function() {
+	$scope.getPhoto = function(type) {
 		console.log("get photo")
+		var dty
+		console.log(type)
+		if (type == 1) {
+			dty = Camera.PictureSourceType.PHOTOLIBRARY
+		} else {
+			dty = Camera.PictureSourceType.CAMERA
+		}
 		options = {
 			// quality : 50,
 			destinationType : Camera.DestinationType.DATA_URL,//Camera.DestinationType.FILE_URI,//
@@ -164,10 +195,14 @@ angular.module('starter.controllers', [])
             $scope.imgURI  = "data:image/jpeg;base64,"+imageData
             $scope.lastPhoto = dataURItoBlob("data:image/jpeg;base64,"+imageData);
         }, function(err) {
+
             // An error occured. Show a message to the user
         });
 
 	}
+
+
+
 
 	function dataURItoBlob(dataURI) {
 	// convert base64/URLEncoded data component to raw binary data held in a string
@@ -213,25 +248,9 @@ angular.module('starter.controllers', [])
 	        transformRequest:angular.identity,
 	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
 	    }).success(function(data, status, headers){
-	    	// $http.post("http://127.0.0.1:3000/uploadImage", fd, {
-		    //     transformRequest:angular.identity,
-		    //     headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
-	    	// }).success(function(data, status, headers){
-	    	// 	console.log("success!")
-	    	// })
-	    	console.log(data)
-	    	console.table(data)
-	    	displayInput.set(data["candidate"])
-	    	// $scope.index = 0;
-	    	// $scope.pic = data["candidate"];
-	    	// $scope.picCur = $scope.pic[0]["face_id"]
 	    	
-	    	// console.log($scope.picCur)
-	    	// console.log(picCur)
-	    	// console.log(status)
-	    	// console.log(data)
-	    	// console.log(headers)
-
+	    	displayInput.set(data["candidate"])
+	    	
 	    })
 	    .error(function(data, status, headers){
 	    	console.log("error!")

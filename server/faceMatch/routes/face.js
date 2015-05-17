@@ -12,30 +12,76 @@ var db = models.db
 
 var prefix = "http://182.92.243.187:3000/Face/"
 
-router.post("/getRecentFace", function(req, res) {
+router.post("/getFace", function(req, res) {
 	console.log(req)
+
 	var q = faceModel.find().sort({'_id': -1}).limit(20);
 	res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
 	q.exec(function(err, data) {
-		console.log("!!!!");
+		// console.log("!!!!");
 		if (err) return console.error(err);
 		// var querystring = require("querystring");
 		// var result = querystring.escape(ob)
 		// console.table(ob)
 		// console.log(result)
-		var results = {1 : "3"}
+		// var results = {1 : "3"}
 		 // res.writeHead(200, { 'Content-Type': 'text/plain' });
   		  // res.write(JSON.stringify(results.map(function (msg){ return {msgId: msg.fileName}; })));
   		
   		// res.end();
   		for (var i = 0; i < data.length; i++) {
-  			if (data[i]["gender"] == "Female") 
-  				data[i]["face"] = prefix + "Female/" + data[i]["face"] + ".jpg"
-  			else 
-  				data[i]["face"] = prefix + "Male/" + data[i]["face"] + ".jpg"
-  		}
+  			if (data[i]["gender"] == "Female")  {
+  				data[i].content = prefix + "Female/" + data[i]["face"] + ".jpg";
+  				// console.log(data[i])
+  			}
+  			else  {
+  				data[i].content = prefix + "Male/" + data[i]["face"] + ".jpg";
+  				// data[i]["content"] = prefix + "Male/" + data[i]["face"] + ".jpg"
+  				// console.log(data[i])
+  			}
+  		}	
+  		// console.log(data)
+	  		res.json({data:data});
+	  		// console.table(data)
+	  		console.log("send end!")
+	  		res.end();
+	     // `posts` will be of length 20
+	});
+});
+
+router.post("/getRecentFace", function(req, res) {
+	console.log(req)
+
+	var q = faceModel.find().sort({'_id': -1}).limit(20);
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
+	q.exec(function(err, data) {
+		// console.log("!!!!");
+		if (err) return console.error(err);
+		// var querystring = require("querystring");
+		// var result = querystring.escape(ob)
+		// console.table(ob)
+		// console.log(result)
+		// var results = {1 : "3"}
+		 // res.writeHead(200, { 'Content-Type': 'text/plain' });
+  		  // res.write(JSON.stringify(results.map(function (msg){ return {msgId: msg.fileName}; })));
+  		
+  		// res.end();
+  		for (var i = 0; i < data.length; i++) {
+  			if (data[i]["gender"] == "Female")  {
+  				data[i].content = prefix + "Female/" + data[i]["face"] + ".jpg";
+  				// console.log(data[i])
+  			}
+  			else  {
+  				data[i].content = prefix + "Male/" + data[i]["face"] + ".jpg";
+  				// data[i]["content"] = prefix + "Male/" + data[i]["face"] + ".jpg"
+  				// console.log(data[i])
+  			}
+  		}	
+  		// console.log(data)
 	  		res.json({data:data});
 	  		// console.table(data)
 	  		console.log("send end!")

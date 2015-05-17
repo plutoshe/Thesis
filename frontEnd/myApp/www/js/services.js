@@ -76,6 +76,55 @@ angular.module('starter.services', [])
     }
   };
 })
+.factory('chatDetailService', function($http, $q) {
+  var chatDetaila = $q.defer();
+  var src = $q.defer()
+  var set = function(newObj) {
+    console.log("!!!!!!!!")
+    console.log(newObj)
+    $http({method: 'POST',
+      url: serverPrefix + '/createPerson',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      transformRequest: function(obj) {
+        console.table(obj)
+          var str = [];
+          for(var p in obj) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          }
+        console.log(str)
+          return str.join("&");
+      },
+      data: {face: newObj}
+    }).success(function(data, status, headers, config) {
+      // chats.resolve(data["data"])
+      // console.table(data)
+      // console.log(data)
+      chatDetaila.resolve(data[0])
+      src.resolve(serverPrefix + "/Face/" + data[0]["gender"] + "/" + data[0]["face"] + ".jpg")
+      console.log("success!!!")
+      
+    }).
+    error(function(data, status, headers, config) {
+      console.log("Error status : " + status);
+      
+    });
+    
+  }
+  var chatDetail = function() {
+    return chatDetaila.promise
+    
+  }
+  var source = function() {
+    return src.promise
+  }
+  
+  return {
+    set : set,
+    chatDetail : chatDetail,
+    source : source
+    
+  };
+})
 .factory('displayInput', function($http, $q) {
   var collection = $q.defer();
   var firstone = $q.defer()

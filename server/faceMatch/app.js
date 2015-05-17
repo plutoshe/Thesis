@@ -32,13 +32,14 @@ app.use('/', routes);
 app.use('/users', users);
 
 app.post('/getRecentFace', face);
-app.post('/newface', face)
+app.post('/getFace', face);
+app.post('/newface', face);
 
 app.post('/refresh', users);
 app.post('/addFaceToPersonbypost', users);
 app.post('/addFaceToPersonbypostandurl', users);
 app.post('/getImage', users);
-app.post('/getPointedfaceInfo', users)
+
 
 
 app.get("/faceset/get_info", users)
@@ -50,7 +51,7 @@ app.post('/addFaceToFaceset', users)
 // app.get('/test', users);
 app.get('/upload', users);
 
-app.post('/info/get_session', users)
+
 app.get('/compare', users);
 app.get('/detect', users);
 app.get('/addFaceToPerson', users);
@@ -60,7 +61,7 @@ app.get('/addPersonToGroup', users);
 app.get('/createGroup', users);
 app.get('/getGroupList', users);
 app.get('/getPersonList', users);
-app.post('/getPersonInfo', users);
+
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
