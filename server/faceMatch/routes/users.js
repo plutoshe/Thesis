@@ -38,19 +38,40 @@ var path = require('path');
 var faceModel = models.face;
 
 router.get("/train/search", function(req, res) {
-	trainSearch(facesetGroup["Male"])
-	trainSearch(facesetGroup["Female"])
+	res.send(trainSearch(facesetGroup["Male"]))
+	res.send(trainSearch(facesetGroup["Female"]))
 	res.end()
 });
 
+router.post("/info/get_session", function(req, res) {
+	console.log("into get session router")
+	var infoParams = {
+		session_id : req.body.session_id
+	}
+	console.log(infoParams)
+	facePP.info.get_session(infoParams, function(err, infoRes) {
+		console.log("!!!!")
+		if (err) {
+			console.log(err)
+			res.send(err)
+			res.end()
+			return
+		}
+		console.log(infoRes)
+		res.send(infoRes)
+		res.end()
+	})
+})
+
 function trainSearch(faceset_id) {
+	// console.log
 	var trainParams = {
 		faceset_id : faceset_id,
 	};
+	console.log("!!!")
 	facePP.train.search(trainParams, function(err, trainRes) {
-		// res.send(personRes);
-		// res.end();
-		return
+		console.log(trainRes)
+		return trainRes
 		
 	});
 }
@@ -76,7 +97,7 @@ var contrast = {
 }
 var path = require("path")
 var storePathPrefix = path.resolve("./public/Face") + "/"
-var outputPrefix = "http://localhost:3000/Face/"
+var outputPrefix = "http://182.92.243.187:3000/Face/"
 var xuhao = 0
 
 
@@ -152,13 +173,6 @@ router.post('/getImage', function(request, response) {
 	    // console.log(files)
 	    detectFace(files.image.path, function(err, data_face) {
 			// response.send(data_face);
-			console.log("data_face : \n", data_face)
-			processImg(data_face.face_id, data_face.gender, function(err, data_match) {
-				console.log(data_match)
-				response.send(data_match)
-				response.end()
-			})	
-			console.log(fields)
 			if (fields.store == "true") {
 				console.log("into store")
 				dealWithUpdatePhoto(
@@ -171,6 +185,14 @@ router.post('/getImage', function(request, response) {
 					}
 				)
 			}
+			console.log("data_face : \n", data_face)
+			processImg(data_face.face_id, data_face.gender, function(err, data_match) {
+				console.log(data_match)
+				response.send(data_match)
+				response.end()
+			})	
+			console.log(fields)
+			
 		})
     });
 
@@ -181,7 +203,7 @@ router.post('/getImage', function(request, response) {
 // return the closet candidate face to invoker through the call-back function
 // return tyep : 
 function processImg(face_id, gender, callback) {
-	var MatchGender = gender;
+	var MatchGender = contrast[gender];
 
 	console.log(face_id, gender)
 	console.log("match")

@@ -50,6 +50,7 @@ app.post('/addFaceToFaceset', users)
 // app.get('/test', users);
 app.get('/upload', users);
 
+app.post('/info/get_session', users)
 app.get('/compare', users);
 app.get('/detect', users);
 app.get('/addFaceToPerson', users);

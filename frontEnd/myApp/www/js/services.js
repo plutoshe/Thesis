@@ -1,4 +1,4 @@
-
+var serverPrefix = "http://182.92.243.187:3000"
 
 angular.module('starter.services', [])
 .factory('Chats', function($http, $q) {
@@ -35,7 +35,7 @@ angular.module('starter.services', [])
   var chats = $q.defer();
   $http({
     method: 'POST',
-    url: 'http://localhost:3000/getRecentFace',
+    url: serverPrefix + '/getRecentFace',
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     transformRequest: function(obj) {
         var str = [];

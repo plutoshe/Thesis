@@ -1,3 +1,4 @@
+var serverPrefix = "182.92.243.187:3000"
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $ionicPopover) {
@@ -80,9 +81,11 @@ angular.module('starter.controllers', [])
 
 	displayInput.all().then(function(res){
 		console.table(res)
-		$scope.pic = res
-		$scope.picCur = res[0]["face_id"]
-		$scope.index = 0
+		if (res) {
+			$scope.pic = res
+			$scope.picCur = res[0]["face_id"]
+			$scope.index = 0
+		}
 	}, function(err) {
 
 	})
@@ -205,7 +208,7 @@ angular.module('starter.controllers', [])
 	 //        },
 
 		// }
-		var upload_url = "http://127.0.0.1:3000/getImage"
+		var upload_url = serverPrefix + "/getImage"
 	    $http.post(upload_url, fd, {
 	        transformRequest:angular.identity,
 	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
@@ -216,6 +219,8 @@ angular.module('starter.controllers', [])
 	    	// }).success(function(data, status, headers){
 	    	// 	console.log("success!")
 	    	// })
+	    	console.log(data)
+	    	console.table(data)
 	    	displayInput.set(data["candidate"])
 	    	// $scope.index = 0;
 	    	// $scope.pic = data["candidate"];
@@ -356,20 +361,20 @@ angular.module('starter.controllers', [])
 		// console.log($scope.lastPhoto)
 		// console.log(fd)
 		// var querystring = require('querystring'); 
-		var req = {
-			method : "POST",
-			url : "http://127.0.0.1:3000/",
-			port : 3000,
-			path : '/getImage',
-			headers:{'Content-Type':"image/jpeg"
-	        },
+		// var req = {
+		// 	method : "POST",
+		// 	url : "http://127.0.0.1:3000/",
+		// 	port : 3000,
+		// 	path : '/getImage',
+		// 	headers:{'Content-Type':"image/jpeg"
+	 //        },
 
-	        data : { 
-	        	image : fd
-	        },
+	 //        data : { 
+	 //        	image : fd
+	 //        },
 
-		}
-		var upload_url = "http://127.0.0.1:3000/getImage"
+		// }
+		var upload_url = serverPrefix + "/getImage"
 	    $http.post(upload_url, fd, {
 	        transformRequest:angular.identity,
 	        headers:{'Content-Type': undefined}//"application/x-www-form-urlencoded"}
