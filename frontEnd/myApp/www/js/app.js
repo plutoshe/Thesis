@@ -66,6 +66,7 @@ angular.module('starter', ['ionic',  'starter.controllers', 'ui.router', 'starte
   })
   .state('tab.display', {
     url : '/display',
+     cache: false,
     views: {
       'tab-chats': {
     
@@ -86,7 +87,7 @@ angular.module('starter', ['ionic',  'starter.controllers', 'ui.router', 'starte
       }
     })
     .state('tab.chat-detail', {
-      url: '/chats/chatDetail',
+      url: '/chats/:chatId',
       views: {
         'tab-chats': {
           templateUrl: 'templates/chat-detail.html',

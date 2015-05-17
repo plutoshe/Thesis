@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
   $scope.gotoDetail = function (chatID) {
   	console.log(chatID)
   	chatDetailService.set(chatID)
-  	$state.go("tab.chat-detail")
+  	$state.go("tab.chat-detail", {chatId : chatID}, { reload: true })
   }
   // $scope.chats = Chats.all().then(function());
   $scope.chats = [];
@@ -76,40 +76,44 @@ angular.module('starter.controllers', [])
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, chatDetailService) {
 	
-	chatDetailService.source().then(function(res) {
-		console.log(res)
-		
-		$scope.src = res
-	});
+	
 	chatDetailService.chatDetail().then(function(res) {
-		$scope.chat = res
+		$scope.chat = res.data
+		$scope.src = res.src
+		// console.log(res)
+		console.table(res)
 	})
 	$scope.toggle = function() {
 	        
 	}			
 })
-.controller('DisplayCtrl', function($scope, $q, displayInput, $state, chatDetailService) {
+.controller('DisplayCtrl', function($window, $scope, $q, displayInput, $state, chatDetailService) {
 	// $scope.picCur = pic[0]["face"]
 	// $state.go($state.current, {}, {reload: true});
+	// $window.location.reload(true)
 	console.log("in display")
 	$scope.interest = function () {
 		if ($scope.pic && $scope.index < $scope.pic.length) {
-			console.log($scope.pic[$scope.index]["face_id"])
+			// console.log($scope.pic[$scope.index]["face_id"])
 			chatDetailService.set($scope.pic[$scope.index]["face_id"])
 			$state.go("tab.chat-detail")
 		}
 	}
+	if ($scope.pic === undefined) {
+		console.log("!!!!!")
+		console.log($scope.pic)
+		displayInput.all().then(function(res){
+			// console.table(res)
 
-	displayInput.all().then(function(res){
-		console.table(res)
-		if (res) {
-			$scope.pic = res
-			$scope.picCur = res[0]["new_face_id"]
-			$scope.index = 0
-		}
-	}, function(err) {
+			if (res) {
+				$scope.pic = res
+				$scope.picCur = res[0]["new_face_id"]
+				$scope.index = 0
+			}
+		}, function(err) {
 
-	})
+		})
+	}
 
 	
 	$scope.nextPhoto = function() {
@@ -173,6 +177,7 @@ angular.module('starter.controllers', [])
 		console.log("get photo")
 		var dty
 		console.log(type)
+		console.log("=======================")
 		if (type == 1) {
 			dty = Camera.PictureSourceType.PHOTOLIBRARY
 		} else {
@@ -250,7 +255,7 @@ angular.module('starter.controllers', [])
 	    }).success(function(data, status, headers){
 	    	
 	    	displayInput.set(data["candidate"])
-	    	
+	    	$state.go("tab.display", {}, {reload: true})
 	    })
 	    .error(function(data, status, headers){
 	    	console.log("error!")

@@ -32,37 +32,38 @@ angular.module('starter.services', [])
   //   face: 'https://pbs.twimg.com/profile_images/491995398135767040/ie2Z_V6e.jpeg'
   // }];
   
-  var chats = $q.defer();
-  $http({
-    method: 'POST',
-    url: serverPrefix + '/getRecentFace',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    transformRequest: function(obj) {
-        var str = [];
-        for(var p in obj)
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-        return str.join("&");
-    },
-    data: {username: "1"}
-  })
-
-
-  // $http.post(, {face : "1"}).
-  .success(function(data, status, headers, config) {
-    chats.resolve(data["data"])
-    console.table(chats)
-    console.log("success!!!")
-    
-  }).
-  error(function(data, status, headers, config) {
-    console.log("Error status : " + status);
-    
-  });
-
-
+  
 
   return {
     all: function() {
+      var chats = $q.defer();
+      $http({
+        method: 'POST',
+        url: serverPrefix + '/getRecentFace',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        transformRequest: function(obj) {
+            var str = [];
+            for(var p in obj)
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            return str.join("&");
+        },
+        data: {username: "1"}
+      })
+
+
+      // $http.post(, {face : "1"}).
+      .success(function(data, status, headers, config) {
+        chats.resolve(data["data"])
+        console.table(chats)
+        console.log("success!!!")
+        
+      }).
+      error(function(data, status, headers, config) {
+        console.log("Error status : " + status);
+        
+      });
+
+
       return chats.promise;
     },
     remove: function(chat) {
@@ -77,11 +78,17 @@ angular.module('starter.services', [])
   };
 })
 .factory('chatDetailService', function($http, $q) {
-  var chatDetaila = $q.defer();
-  var src = $q.defer()
+  var jish
   var set = function(newObj) {
     console.log("!!!!!!!!")
     console.log(newObj)
+    jish  = newObj
+    
+    
+  }
+    var chatDetail = function() {
+    var chatDetaila = $q.defer();
+    
     $http({method: 'POST',
       url: serverPrefix + '/createPerson',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -94,13 +101,20 @@ angular.module('starter.services', [])
         console.log(str)
           return str.join("&");
       },
-      data: {face: newObj}
+      data: {face: jish}
     }).success(function(data, status, headers, config) {
       // chats.resolve(data["data"])
       // console.table(data)
-      // console.log(data)
-      chatDetaila.resolve(data[0])
-      src.resolve(serverPrefix + "/Face/" + data[0]["gender"] + "/" + data[0]["face"] + ".jpg")
+      console.log(data)
+      console.table(data)
+      var tt = serverPrefix + "/Face/" + data[0]["gender"] + "/" + data[0]["face"] + ".jpg"
+      chatDetaila.resolve(
+        {
+          data : data[0], 
+          src : tt
+        }
+      )
+      // src.resolve()
       console.log("success!!!")
       
     }).
@@ -108,32 +122,27 @@ angular.module('starter.services', [])
       console.log("Error status : " + status);
       
     });
-    
+    return chatDetaila.promise 
   }
-  var chatDetail = function() {
-    return chatDetaila.promise
-    
-  }
-  var source = function() {
-    return src.promise
-  }
-  
+
+
   return {
     set : set,
     chatDetail : chatDetail,
-    source : source
     
   };
 })
 .factory('displayInput', function($http, $q) {
-  var collection = $q.defer();
-  var firstone = $q.defer()
-  var set = function(newObj) {
-     collection.resolve(newObj);
-     firstone.resolve(newObj[0]["first_id"])
+
+  var newObj
+  var set = function(oo) {
+     newObj = oo
+    
   };
 
   var all = function(){
+    var collection = $q.defer();
+    collection.resolve(newObj);
     return collection.promise;
       // if (collection != undefined && id < collection.length)
         
@@ -141,6 +150,8 @@ angular.module('starter.services', [])
       //   return null
   };
   var first = function() {
+    var firstone = $q.defer()
+     firstone.resolve(newObj[0]["first_id"])
     return firstone.promise;
   }
 
