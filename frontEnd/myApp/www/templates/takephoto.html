@@ -79,7 +79,7 @@
       <div class = "col"></div> -->
       <label class="item item-input">
         <!-- <span class="input-label">个人简介</span>  -->
-        <textarea rows="4" placeholder="个人简介" ng-model='user.content'>
+        <textarea rows="2" placeholder="个人简介" ng-model='user.content'>
 
         </textarea>
         <!-- <input type="text" placehoder="个人简介">  -->
@@ -87,9 +87,10 @@
       <!-- <div class = "col col-30">url</div>
       <div class = "col"></div> -->
     </div>
-    <button class="button" ng-click="checkInput()">check</button>
+    <!-- <button class="button" ng-click="checkInput()">check</button> -->
     <!-- <a ui-sref='tab.display'> -->
-    <button class="button button-energized" ng-click="tranferFile()" >提交查看结果</button>
+    <button class="button button-energized" ng-click="tranferFile(0)" >只看匹配结果</button>
+    <button class="button button-energized" ng-click="tranferFile(1)" >提交查看结果</button>
     <!-- </a> -->
   </ion-content>
 </ion-view>

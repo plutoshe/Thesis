@@ -10,16 +10,34 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatsCtrl', function($scope, $ionicPopover, $state,  $stateParams, Chats, chatDetailService) {
+	$scope.doRefresh = function() {
+   Chats.all().then(
+    function(res){
+    // $scope.load = 0;
+    console.log($scope.chats)
+      $scope.chats = res;
+
+    },
+    function(err){
+      console.error(err);
+    }
+  	).finally(function() {
+       // Stop the ion-refresher from spinning
+       $scope.$broadcast('scroll.refreshComplete');
+     });
+  };
   $scope.gotoDetail = function (chatID) {
   	console.log(chatID)
   	chatDetailService.set(chatID)
-  	$state.go("tab.chat-detail", {chatId : chatID}, { reload: true })
+  	$state.go("tab.chat-detail")
   }
   // $scope.chats = Chats.all().then(function());
   $scope.chats = [];
+  console.log("in to chats")
   Chats.all().then(
     function(res){
     // $scope.load = 0;
+    console.log($scope.chats)
       $scope.chats = res;
 
     },
@@ -27,9 +45,6 @@ angular.module('starter.controllers', [])
       console.error(err);
     }
   );
-  console.log("Chat")
-  console.table($scope.chats)
-  console.log("Chat")
   $scope.remove = function(chat) {
     Chats.remove(chat);
   }
@@ -39,38 +54,6 @@ angular.module('starter.controllers', [])
   	 $state.go('tab.takephoto');
   	 console.log("out goto!")
   }
-
-  var template = '<ion-popover-view><ion-header-bar> <h1 class="title">My Popover Title</h1> </ion-header-bar> <ion-content> Hello! </ion-content></ion-popover-view>';
-
-	$scope.popover = $ionicPopover.fromTemplate(template, {
-		scope: $scope
-	});
-
-	// .fromTemplateUrl() method
-	$ionicPopover.fromTemplateUrl('templates/popover.html', {
-	scope: $scope
-	}).then(function(popover) {
-	$scope.popover = popover;
-	});
-
-	$scope.openPopover = function($event) {
-		$scope.popover.show($event);
-	};
-	$scope.closePopover = function() {
-	$scope.popover.hide();
-	};
-	//Cleanup the popover when we're done with it!
-	$scope.$on('$destroy', function() {
-	$scope.popover.remove();
-	});
-	// Execute action on hide popover
-	$scope.$on('popover.hidden', function() {
-	// Execute action
-	});
-	// Execute action on remove popover
-	$scope.$on('popover.removed', function() {
-	// Execute action
-	});
 
 })
 
@@ -183,10 +166,11 @@ angular.module('starter.controllers', [])
 		} else {
 			dty = Camera.PictureSourceType.CAMERA
 		}
+		console.log(dty)
 		options = {
 			// quality : 50,
 			destinationType : Camera.DestinationType.DATA_URL,//Camera.DestinationType.FILE_URI,//
-			sourceType : Camera.PictureSourceType.PHOTOLIBRARY, //Camera.PictureSourceType.CAMEA,//Camera.PictureSourceType.CAMERA, //
+			sourceType : dty, //Camera.PictureSourceType.CAMEA,//Camera.PictureSourceType.CAMERA, //
 			targetWidth : 300,
 			targetHeight : 300,
 			// encodingType : 0,
@@ -225,14 +209,20 @@ angular.module('starter.controllers', [])
 	 return bb;
 	}
 	
-	$scope.tranferFile = function() {
+	$scope.tranferFile = function(store) {
 		console.log("tranfer file")
 		var fd = new FormData();
 		fd.append('image', $scope.lastPhoto);
 		fd.append('name',$scope.user.name);
 		fd.append('url',$scope.user.url);
 		fd.append('content',$scope.user.content);
-		fd.append('store',false);
+		if (store == 1) {
+			zhi = "true"
+		} else {
+			zhi = "false"
+		}
+		
+		fd.append('store',zhi);
 		// var req = {
 		// 	method : "POST",
 		// 	url : "http://127.0.0.1:3000/",

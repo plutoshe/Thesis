@@ -143,27 +143,38 @@ router.post('/getImage', function(request, response) {
     form.parse(request, function(error, fields, files) {
 	    // console.log(fields)
 	    // console.log(files)
+	    if (!files.image) {
+	    
+			response.send({error : "No face"})
+			response.end()
+			return
+	    }
 	    detectFace(files.image.path, function(err, data_face) {
 			// response.send(data_face);
-			if (fields.store == "true") {
-				console.log("into store")
-				dealWithUpdatePhoto(
-					data_face.face_id, 
-					data_face.gender,
-					fields.name, 
-					fields.content,
-					fields.url,
-					function (err) {
-					}
-				)
-			}
-			console.log("data_face : \n", data_face)
-			processImg(data_face.face_id, data_face.gender, function(err, data_match) {
-				console.log(data_match)
-				response.send(data_match)
+			if (data_face && data_face.face_id) {
+				if (fields.store == "true") {
+					console.log("into store")
+					dealWithUpdatePhoto(
+						data_face.face_id, 
+						data_face.gender,
+						fields.name, 
+						fields.content,
+						fields.url,
+						function (err) {
+						}
+					)
+				}
+				console.log("data_face : \n", data_face)
+				processImg(data_face.face_id, data_face.gender, function(err, data_match) {
+					console.log(data_match)
+					response.send(data_match)
+					response.end()
+				})	
+				console.log(fields)
+			} else {
+				response.send({error : "No face"})
 				response.end()
-			})	
-			console.log(fields)
+			}
 			
 		})
     });
