@@ -1,1 +1,6 @@
-/* Empty. Add your own CSS if you like */
+.card
+{
+	margin : 0;
+	background-color: blue; 
+	padding: 0;
+}

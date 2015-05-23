@@ -7602,3 +7602,51 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+.item-image {
+  margin: 0px 0px 0px 0px;
+  padding: 0px; }
+
+.card {
+  margin-bottom: -10px; }
+
+.nav-bar {
+  /*bkground-color: red;*/ }
+
+.tab-chat {
+  background: url(../img/nice_snow.png); }
+
+.tab-zi {
+  /*background-color: #000;*/
+  font-size: 12;
+  font-weight: 20; }
+
+title {
+  color: #FF0000;
+  font-size: 20pt; }
+
+.scroll-content {
+  background: url(../img/food.png); }
+
+ion-list {
+  background-color: red; }
+
+.item {
+  background: url(../img/food.png);
+  border: none;
+  padding: 0px;
+  max-height: none; }
+
+.item-content {
+  background: url(../img/food.png);
+  color: red; }
+
+.item-content:before {
+  background-color: red;
+  color: red; }
+
+h2 {
+  align: center;
+  color: #886aea;
+  font-family: 'FangSong';
+  font-size: 10000px; }
