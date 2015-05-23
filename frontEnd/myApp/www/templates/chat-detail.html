@@ -10,6 +10,15 @@
     <p>
       {{chat.content}}
     </p>
-    <a href="{{chat.url}}"><p>个人主页</p></a>
+    <!-- <a href="{{chat.url}}"><p>个人主页</p></a>
+    <a href="#" onclick="window.open('{{chat.url}', 'location=yes'); return false;">
+      个人主页
+    </a>  
+    <a href="#" onclick="window.open('http://www.baidu.com', 'location=yes'); return false;">
+      个人主页
+    </a>  -->
+    <a href="#" ng-click="gotoHTML()">
+      个人主页
+    </a>   
   </ion-content>
 </ion-view>

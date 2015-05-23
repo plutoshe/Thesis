@@ -66,6 +66,10 @@ angular.module('starter.controllers', [])
 		// console.log(res)
 		console.table(res)
 	})
+	$scope.gotoHTML = function () {
+		window.open($scope.chat.url, "_blank", "location=yes");
+		return false
+	}
 	$scope.toggle = function() {
 	        
 	}			
